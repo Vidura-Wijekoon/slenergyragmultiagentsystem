@@ -3,9 +3,19 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Lightbulb, Send, FileText, X } from 'lucide-react';
+import { Lightbulb, Send, FileText, X, ExternalLink, BookOpen } from 'lucide-react';
 import LoadingIndicator from './LoadingIndicator';
 import DataVisualization, { ChartType } from './DataVisualization';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface PolicySectionProps {
   onSubmit: (query: string) => void;
@@ -21,6 +31,14 @@ interface PolicySectionProps {
   onClear: () => void;
 }
 
+interface PolicyReference {
+  title: string;
+  source: string;
+  url: string;
+  year: number;
+  type: string;
+}
+
 const PolicySection: React.FC<PolicySectionProps> = ({ 
   onSubmit, 
   isLoading,
@@ -29,11 +47,40 @@ const PolicySection: React.FC<PolicySectionProps> = ({
   onClear
 }) => {
   const [query, setQuery] = useState('');
+  const [referenceType, setReferenceType] = useState<'government' | 'academic' | 'all'>('all');
+
+  // Mock policy references - in a real implementation, these would come from the API
+  const policyReferences: PolicyReference[] = [
+    {
+      title: "National Energy Policy and Strategies of Sri Lanka",
+      source: "Ministry of Power and Energy",
+      url: "https://powermin.gov.lk/english/national-energy-policy/",
+      year: 2019,
+      type: "government"
+    },
+    {
+      title: "Sri Lanka Energy Sector Development Plan (2015-2025)",
+      source: "Ceylon Electricity Board",
+      url: "https://www.ceb.lk/policy/en",
+      year: 2015,
+      type: "government"
+    },
+    {
+      title: "Renewable Energy Development in Sri Lanka: Status, Potential and Barriers",
+      source: "Energy Policy Journal",
+      url: "https://www.sciencedirect.com/journal/energy-policy",
+      year: 2021,
+      type: "academic"
+    }
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim() && !isLoading) {
-      onSubmit(query);
+      const fullQuery = referenceType !== 'all' 
+        ? `${query} (Find ${referenceType} policy references)`
+        : query;
+      onSubmit(fullQuery);
     }
   };
 
@@ -73,6 +120,41 @@ const PolicySection: React.FC<PolicySectionProps> = ({
               placeholder="Ask about energy policies and regulations..."
               className="min-h-[120px] w-full resize-none border-gray-300 focus:border-srigreen-600 focus:ring-srigreen-600 transition-all duration-200"
             />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Reference Type:
+            </label>
+            <div className="flex space-x-2">
+              <Button
+                type="button"
+                variant={referenceType === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setReferenceType('all')}
+                className={referenceType === 'all' ? 'bg-srigreen-700' : ''}
+              >
+                All Sources
+              </Button>
+              <Button
+                type="button"
+                variant={referenceType === 'government' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setReferenceType('government')}
+                className={referenceType === 'government' ? 'bg-srigreen-700' : ''}
+              >
+                Government
+              </Button>
+              <Button
+                type="button"
+                variant={referenceType === 'academic' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setReferenceType('academic')}
+                className={referenceType === 'academic' ? 'bg-srigreen-700' : ''}
+              >
+                Academic
+              </Button>
+            </div>
           </div>
           
           <div className="flex justify-end">
@@ -152,27 +234,67 @@ const PolicySection: React.FC<PolicySectionProps> = ({
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4 }}
               >
-                <div className="prose prose-sm md:prose-base max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: result }} />
-                </div>
-                
-                {visualizationData && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.4 }}
-                    className="mt-8"
-                  >
-                    <DataVisualization
-                      data={visualizationData.data}
-                      type={visualizationData.type}
-                      title={visualizationData.title}
-                      xKey={visualizationData.xKey}
-                      yKey={visualizationData.yKey}
-                      height={350}
-                    />
-                  </motion.div>
-                )}
+                <Tabs defaultValue="analysis">
+                  <TabsList className="mb-4">
+                    <TabsTrigger value="analysis">Analysis</TabsTrigger>
+                    <TabsTrigger value="references">References</TabsTrigger>
+                    {visualizationData && <TabsTrigger value="visualization">Visualization</TabsTrigger>}
+                  </TabsList>
+                  
+                  <TabsContent value="analysis">
+                    <div className="prose prose-sm md:prose-base max-w-none">
+                      <div dangerouslySetInnerHTML={{ __html: result }} />
+                    </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="references">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {policyReferences
+                        .filter(ref => referenceType === 'all' || ref.type === referenceType)
+                        .map((reference, index) => (
+                          <Card key={index} className="transition-all duration-200 hover:shadow-md">
+                            <CardHeader className="pb-2">
+                              <CardTitle className="text-base">{reference.title}</CardTitle>
+                              <CardDescription className="flex justify-between">
+                                <span>{reference.source}</span>
+                                <Badge variant="outline">{reference.year}</Badge>
+                              </CardDescription>
+                            </CardHeader>
+                            <CardFooter className="pt-2 flex justify-between">
+                              <Badge variant={reference.type === 'government' ? 'default' : 'secondary'}>
+                                {reference.type === 'government' ? 'Government' : 'Academic'}
+                              </Badge>
+                              <Button variant="ghost" size="sm" asChild>
+                                <a href={reference.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1">
+                                  <ExternalLink className="w-3 h-3" />
+                                  View Source
+                                </a>
+                              </Button>
+                            </CardFooter>
+                          </Card>
+                        ))}
+                    </div>
+                  </TabsContent>
+                  
+                  {visualizationData && (
+                    <TabsContent value="visualization">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.4 }}
+                      >
+                        <DataVisualization
+                          data={visualizationData.data}
+                          type={visualizationData.type}
+                          title={visualizationData.title}
+                          xKey={visualizationData.xKey}
+                          yKey={visualizationData.yKey}
+                          height={350}
+                        />
+                      </motion.div>
+                    </TabsContent>
+                  )}
+                </Tabs>
               </motion.div>
             ) : null}
           </AnimatePresence>

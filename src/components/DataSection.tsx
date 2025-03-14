@@ -3,9 +3,17 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { BarChart3, Send, FileText, X } from 'lucide-react';
+import { BarChart3, Send, FileText, X, BarChart, LineChart, PieChart } from 'lucide-react';
 import LoadingIndicator from './LoadingIndicator';
 import DataVisualization, { ChartType } from './DataVisualization';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from "@/components/ui/select";
 
 interface DataSectionProps {
   onSubmit: (query: string) => void;
@@ -29,11 +37,14 @@ const DataSection: React.FC<DataSectionProps> = ({
   onClear
 }) => {
   const [query, setQuery] = useState('');
+  const [preferredChartType, setPreferredChartType] = useState<ChartType>('line');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim() && !isLoading) {
-      onSubmit(query);
+      // Append chart type preference to the query
+      const fullQuery = `${query} (preferred chart type: ${preferredChartType})`;
+      onSubmit(fullQuery);
     }
   };
 
@@ -73,6 +84,46 @@ const DataSection: React.FC<DataSectionProps> = ({
               placeholder="Ask for specific energy data visualization..."
               className="min-h-[120px] w-full resize-none border-gray-300 focus:border-srigreen-600 focus:ring-srigreen-600 transition-all duration-200"
             />
+          </div>
+          
+          <div className="mb-4">
+            <label htmlFor="chartType" className="block text-sm font-medium text-gray-700 mb-1">
+              Preferred Chart Type:
+            </label>
+            <Select 
+              value={preferredChartType} 
+              onValueChange={(value) => setPreferredChartType(value as ChartType)}
+            >
+              <SelectTrigger className="w-full md:w-1/3">
+                <SelectValue placeholder="Select chart type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="line">
+                  <div className="flex items-center">
+                    <LineChart className="w-4 h-4 mr-2" />
+                    Line Chart
+                  </div>
+                </SelectItem>
+                <SelectItem value="bar">
+                  <div className="flex items-center">
+                    <BarChart className="w-4 h-4 mr-2" />
+                    Bar Chart
+                  </div>
+                </SelectItem>
+                <SelectItem value="pie">
+                  <div className="flex items-center">
+                    <PieChart className="w-4 h-4 mr-2" />
+                    Pie Chart
+                  </div>
+                </SelectItem>
+                <SelectItem value="area">
+                  <div className="flex items-center">
+                    <LineChart className="w-4 h-4 mr-2" />
+                    Area Chart
+                  </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="flex justify-end">
@@ -164,14 +215,58 @@ const DataSection: React.FC<DataSectionProps> = ({
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3, duration: 0.4 }}
                   >
-                    <DataVisualization
-                      data={visualizationData.data}
-                      type={visualizationData.type}
-                      title={visualizationData.title}
-                      xKey={visualizationData.xKey}
-                      yKey={visualizationData.yKey}
-                      height={350}
-                    />
+                    <Tabs defaultValue={visualizationData.type}>
+                      <TabsList className="mb-4">
+                        <TabsTrigger value="line" disabled={!['line', 'area'].includes(visualizationData.type)}>Line</TabsTrigger>
+                        <TabsTrigger value="bar" disabled={!['bar'].includes(visualizationData.type)}>Bar</TabsTrigger>
+                        <TabsTrigger value="pie" disabled={!['pie'].includes(visualizationData.type)}>Pie</TabsTrigger>
+                        <TabsTrigger value="area" disabled={!['area', 'line'].includes(visualizationData.type)}>Area</TabsTrigger>
+                      </TabsList>
+                      
+                      <TabsContent value="line">
+                        <DataVisualization
+                          data={visualizationData.data}
+                          type="line"
+                          title={visualizationData.title}
+                          xKey={visualizationData.xKey}
+                          yKey={visualizationData.yKey}
+                          height={350}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="bar">
+                        <DataVisualization
+                          data={visualizationData.data}
+                          type="bar"
+                          title={visualizationData.title}
+                          xKey={visualizationData.xKey}
+                          yKey={visualizationData.yKey}
+                          height={350}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="pie">
+                        <DataVisualization
+                          data={visualizationData.data}
+                          type="pie"
+                          title={visualizationData.title}
+                          xKey={visualizationData.xKey}
+                          yKey={visualizationData.yKey}
+                          height={350}
+                        />
+                      </TabsContent>
+                      
+                      <TabsContent value="area">
+                        <DataVisualization
+                          data={visualizationData.data}
+                          type="area"
+                          title={visualizationData.title}
+                          xKey={visualizationData.xKey}
+                          yKey={visualizationData.yKey}
+                          height={350}
+                        />
+                      </TabsContent>
+                    </Tabs>
                   </motion.div>
                 )}
               </motion.div>
