@@ -1,4 +1,3 @@
-
 // This is a mock API for frontend demonstration
 // In a real application, this would connect to the Python backend
 
@@ -13,7 +12,7 @@ interface QueryResponse {
   };
 }
 
-export async function submitQuery(query: string, section: 'search' | 'visualize' | 'insights' = 'search'): Promise<QueryResponse> {
+export async function submitQuery(query: string, section: 'search' | 'visualize' | 'insights' | 'power' = 'search'): Promise<QueryResponse> {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 2000));
   
@@ -227,6 +226,67 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
           </ul>
           <p>These incentives have successfully attracted both domestic and international investors to Sri Lanka's renewable energy sector, particularly in wind, solar, and small hydropower projects.</p>
         `
+      };
+    }
+  }
+  
+  // POWER SECTION RESPONSES
+  else if (section === 'power') {
+    if (lowerQuery.includes('demand') || lowerQuery.includes('consumption')) {
+      return {
+        answer: `
+          <h3>Real-Time Power Demand in Sri Lanka</h3>
+          <p>The current electricity demand in Sri Lanka is constantly fluctuating throughout the day. Peak demand typically occurs between 6:30 PM and 10:30 PM when residential consumption is at its highest.</p>
+          <p>The Ceylon Electricity Board (CEB) manages this demand through a combination of baseload power plants (primarily coal and major hydropower) and peaking power plants (including gas turbines and smaller hydropower stations).</p>
+          <p>Real-time monitoring and forecasting systems help grid operators anticipate and respond to changes in demand, ensuring grid stability and reliability.</p>
+        `,
+        visualization: {
+          data: [
+            { time: '00:00', demand: 1850 },
+            { time: '03:00', demand: 1650 },
+            { time: '06:00', demand: 1950 },
+            { time: '09:00', demand: 2350 },
+            { time: '12:00', demand: 2600 },
+            { time: '15:00', demand: 2500 },
+            { time: '18:00', demand: 2800 },
+            { time: '21:00', demand: 2950 },
+          ],
+          type: 'line',
+          title: 'Daily Power Demand Pattern (MW)',
+          xKey: 'time',
+          yKey: 'demand'
+        }
+      };
+    } else if (lowerQuery.includes('generation') || lowerQuery.includes('supply')) {
+      return {
+        answer: `
+          <h3>Real-Time Power Generation in Sri Lanka</h3>
+          <p>Sri Lanka's electricity generation comes from a diverse mix of sources, with real-time proportions varying based on resource availability, demand patterns, and economic dispatching decisions.</p>
+          <p>The generation mix includes:</p>
+          <ul>
+            <li><strong>Coal:</strong> Provides baseload power from the Norochcholai power plant</li>
+            <li><strong>Major Hydropower:</strong> Varies seasonally based on reservoir levels</li>
+            <li><strong>Oil & Diesel:</strong> Used primarily for peaking and backup</li>
+            <li><strong>Wind & Solar:</strong> Fluctuate based on weather conditions</li>
+            <li><strong>Mini-hydro:</strong> Provides distributed generation across the country</li>
+          </ul>
+          <p>The CEB's System Control Center continuously optimizes this mix to ensure reliable supply at minimum cost.</p>
+        `,
+        visualization: {
+          data: [
+            { source: 'Coal', output: 890 },
+            { source: 'Major Hydro', output: 760 },
+            { source: 'Oil & Diesel', output: 510 },
+            { source: 'Mini Hydro', output: 290 },
+            { source: 'Wind', output: 180 },
+            { source: 'Solar', output: 270 },
+            { source: 'Biomass', output: 100 }
+          ],
+          type: 'bar',
+          title: 'Current Power Generation by Source (MW)',
+          xKey: 'source',
+          yKey: 'output'
+        }
       };
     }
   }
