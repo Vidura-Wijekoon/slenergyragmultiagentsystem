@@ -1,69 +1,128 @@
-# Welcome to your Lovable project
 
-## Project info
+# Multi-Agent Retrieval-Augmented Generation (RAG) System
 
-**URL**: https://lovable.dev/projects/8c7f8b9a-1503-4420-bc78-7422a68bc046
+This repository contains a Multi-Agent RAG system for the Sri Lankan Energy Sector Knowledge Base, including both a React frontend and Python backend.
 
-## How can I edit this code?
+## Table of Contents
 
-There are several ways of editing your application.
+- [Introduction](#introduction)
+- [Features](#features)
+- [System Architecture](#system-architecture)
+- [Setup Instructions](#setup-instructions)
+  - [Frontend Setup](#frontend-setup)
+  - [Backend Setup](#backend-setup)
+- [Usage](#usage)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
 
-**Use Lovable**
+## Introduction
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/8c7f8b9a-1503-4420-bc78-7422a68bc046) and start prompting.
+The Sri Lankan Energy Sector Knowledge Base uses a Multi-Agent Retrieval-Augmented Generation (RAG) System to provide insights and visualizations about Sri Lanka's energy sector. The system enhances large language models by integrating retrieval mechanisms that provide up-to-date and domain-specific information.
 
-Changes made via Lovable will be committed automatically to this repo.
+## Features
 
-**Use your preferred IDE**
+- **Intelligent Search**: Ask questions about Sri Lanka's energy sector and get detailed, accurate answers
+- **Data Visualization**: View charts and graphs about energy production, consumption, and trends
+- **Policy Insights**: Explore government policies and regulations in the energy sector
+- **Multi-Agent Architecture**: Uses specialized agents for retrieval, generation, visualization, and orchestration
+- **Vector Database Integration**: Stores document embeddings in Pinecone for efficient retrieval
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## System Architecture
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+The system consists of two main components:
 
-Follow these steps:
+1. **React Frontend**: A user-friendly web interface built with React, Tailwind CSS, and shadcn/ui
+2. **Python Backend**: A multi-agent system with the following components:
+   - Retriever Agent: Processes documents and handles vector database operations
+   - Generator Agent: Creates natural language responses using Mistral AI
+   - Visualization Agent: Generates charts and graphs based on queries
+   - Orchestrator Agent: Coordinates the other agents to process user queries
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Setup Instructions
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Frontend Setup
 
-# Step 3: Install the necessary dependencies.
-npm i
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+2. **Start Development Server**:
+   ```bash
+   npm run dev
+   ```
+
+The frontend will run on http://localhost:8080
+
+### Backend Setup
+
+1. **Create a Python Virtual Environment**:
+   ```bash
+   python -m venv env
+   source env/bin/activate  # On Windows, use 'env\Scripts\activate'
+   ```
+
+2. **Install Backend Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Set Up Environment Variables**:
+   Create a `.env` file in the root directory with the following variables:
+   ```
+   # Mistral API Key
+   MISTRAL_API_KEY=your_mistral_api_key
+
+   # Pinecone API Key and Index
+   PINECONE_API_KEY=your_pinecone_api_key
+   PINECONE_INDEX=your_pinecone_index_name
+   PINECONE_ENVIRONMENT=your_pinecone_environment
+
+   # Hugging Face Access Token
+   HUGGINGFACE_API_KEY=your_huggingface_api_key
+   HF_TOKEN=your_huggingface_token
+   ```
+
+4. **Process Documents**:
+   ```bash
+   cd backend
+   python main.py --process-docs
+   ```
+
+5. **Start the Backend Server**:
+   ```bash
+   python main.py --start-server
+   ```
+
+The backend will run on http://localhost:8000
+
+### Connect Frontend to Backend
+
+To use the real backend API instead of simulated data, update `src/config.ts`:
+```typescript
+export const USE_REAL_API = true;
 ```
 
-**Edit a file directly in GitHub**
+## Usage
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Visit the web application at http://localhost:8080
+2. Use the search bar to ask questions about Sri Lanka's energy sector
+3. View detailed answers, visualizations, and source information
+4. Explore different sections of the application for various insights
 
-**Use GitHub Codespaces**
+## Troubleshooting
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Backend Issues
 
-## What technologies are used for this project?
+- **PyMuPDF Installation Problems**: If you encounter issues installing PyMuPDF, try using alternative PDF processing libraries like `pypdf` or `pdfminer.six` which are included in the requirements.txt file
+- **API Connection Issues**: Ensure that both frontend and backend servers are running and that `USE_REAL_API` is set correctly in `src/config.ts`
+- **Vector Database Errors**: Verify that your Pinecone credentials are correct and that you've created an index with the specified name
 
-This project is built with .
+### Frontend Issues
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+- **Development Mode**: In development mode, the frontend uses simulated data by default. Change `USE_REAL_API` to `true` in `src/config.ts` to use the real backend
+- **CORS Issues**: If you encounter CORS issues, ensure the backend CORS settings are properly configured in `backend/app.py`
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/8c7f8b9a-1503-4420-bc78-7422a68bc046) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+This project is licensed under the MIT License - see the LICENSE file for details.
