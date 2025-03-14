@@ -185,7 +185,7 @@ const AgentArchitecture: React.FC = () => {
       
       <footer className="py-6 bg-gradient-to-r from-indigo-900 to-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
-          <p className="text-sm">© 2025 Ministry of Power and Energy, Sri Lanka. All rights reserved.</p>
+          <p className="text-sm">ViduraAI @SriLanka, All rights reserved</p>
         </div>
       </footer>
     </div>
