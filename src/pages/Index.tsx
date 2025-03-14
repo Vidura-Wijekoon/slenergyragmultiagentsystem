@@ -7,6 +7,8 @@ import Header from '@/components/Header';
 import FeatureCard from '@/components/FeatureCard';
 import QuerySection from '@/components/QuerySection';
 import ResultsSection from '@/components/ResultsSection';
+import DataSection from '@/components/DataSection';
+import PolicySection from '@/components/PolicySection';
 import { submitQuery } from '@/utils/api';
 
 const Index = () => {
@@ -22,7 +24,7 @@ const Index = () => {
     setVisualizationData(null);
     
     try {
-      const response = await submitQuery(query);
+      const response = await submitQuery(query, activeSection);
       setResult(response.answer);
       
       if (response.visualization) {
@@ -50,21 +52,77 @@ const Index = () => {
       icon: Search,
       title: 'Intelligent Search',
       description: 'Access comprehensive information about Sri Lanka\'s energy sector',
-      onClick: () => setActiveSection('search')
+      onClick: () => setActiveSection('search'),
+      section: 'search'
     },
     {
       icon: BarChart3,
       title: 'Data Visualization',
       description: 'Generate insightful charts and graphs from energy sector data',
-      onClick: () => setActiveSection('visualize')
+      onClick: () => setActiveSection('visualize'),
+      section: 'visualize'
     },
     {
       icon: Lightbulb,
       title: 'Policy Insights',
       description: 'Understand government policies and regulations in the power sector',
-      onClick: () => setActiveSection('insights')
+      onClick: () => setActiveSection('insights'),
+      section: 'insights'
     },
   ];
+
+  const renderActiveSection = () => {
+    switch (activeSection) {
+      case 'search':
+        return (
+          <>
+            <QuerySection onSubmit={handleQuerySubmit} isLoading={isLoading} sectionType="search" />
+            <ResultsSection 
+              isLoading={isLoading}
+              result={result}
+              visualizationData={visualizationData}
+              onClear={handleClearResults}
+            />
+          </>
+        );
+      case 'visualize':
+        return (
+          <>
+            <DataSection 
+              onSubmit={handleQuerySubmit} 
+              isLoading={isLoading}
+              result={result}
+              visualizationData={visualizationData}
+              onClear={handleClearResults}
+            />
+          </>
+        );
+      case 'insights':
+        return (
+          <>
+            <PolicySection 
+              onSubmit={handleQuerySubmit} 
+              isLoading={isLoading}
+              result={result}
+              visualizationData={visualizationData}
+              onClear={handleClearResults}
+            />
+          </>
+        );
+      default:
+        return (
+          <>
+            <QuerySection onSubmit={handleQuerySubmit} isLoading={isLoading} sectionType="search" />
+            <ResultsSection 
+              isLoading={isLoading}
+              result={result}
+              visualizationData={visualizationData}
+              onClear={handleClearResults}
+            />
+          </>
+        );
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -85,18 +143,12 @@ const Index = () => {
                 title={feature.title}
                 description={feature.description}
                 onClick={feature.onClick}
+                isActive={activeSection === feature.section}
               />
             ))}
           </motion.div>
           
-          <QuerySection onSubmit={handleQuerySubmit} isLoading={isLoading} />
-          
-          <ResultsSection 
-            isLoading={isLoading}
-            result={result}
-            visualizationData={visualizationData}
-            onClear={handleClearResults}
-          />
+          {renderActiveSection()}
         </div>
       </main>
       

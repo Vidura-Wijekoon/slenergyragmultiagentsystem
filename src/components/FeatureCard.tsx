@@ -8,12 +8,21 @@ interface FeatureCardProps {
   title: string;
   description: string;
   onClick?: () => void;
+  isActive?: boolean;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, description, onClick }) => {
+const FeatureCard: React.FC<FeatureCardProps> = ({ 
+  icon: Icon, 
+  title, 
+  description, 
+  onClick,
+  isActive = false
+}) => {
   return (
     <motion.div 
-      className="flex flex-col items-center p-6 rounded-lg bg-white shadow-sm border border-gray-100 card-hover cursor-pointer"
+      className={`flex flex-col items-center p-6 rounded-lg bg-white shadow-sm border ${
+        isActive ? 'border-srigreen-500 ring-2 ring-srigreen-100' : 'border-gray-100'
+      } card-hover cursor-pointer`}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
@@ -21,7 +30,9 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon: Icon, title, descriptio
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="w-14 h-14 rounded-full bg-srigreen-700 flex items-center justify-center text-white mb-4">
+      <div className={`w-14 h-14 rounded-full ${
+        isActive ? 'bg-srigreen-600' : 'bg-srigreen-700'
+      } flex items-center justify-center text-white mb-4`}>
         <Icon className="w-7 h-7" />
       </div>
       <h3 className="text-lg font-medium text-gray-800 mb-2">{title}</h3>

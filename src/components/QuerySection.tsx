@@ -8,9 +8,14 @@ import { HelpCircle, Send } from 'lucide-react';
 interface QuerySectionProps {
   onSubmit: (query: string) => void;
   isLoading: boolean;
+  sectionType?: 'search' | 'visualize' | 'insights';
 }
 
-const QuerySection: React.FC<QuerySectionProps> = ({ onSubmit, isLoading }) => {
+const QuerySection: React.FC<QuerySectionProps> = ({ 
+  onSubmit, 
+  isLoading,
+  sectionType = 'search' 
+}) => {
   const [query, setQuery] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -20,12 +25,38 @@ const QuerySection: React.FC<QuerySectionProps> = ({ onSubmit, isLoading }) => {
     }
   };
 
-  const exampleQueries = [
-    "What are the main renewable energy resources in Sri Lanka?",
-    "Generate the electricity demand for Sri Lanka in past 5 years",
-    "What are the major hydropower projects in Sri Lanka?",
-    "How is climate change affecting Sri Lanka's energy production?"
-  ];
+  const getExampleQueries = () => {
+    switch (sectionType) {
+      case 'search':
+        return [
+          "What are the main renewable energy resources in Sri Lanka?",
+          "How is climate change affecting Sri Lanka's energy production?",
+          "What is the current status of the Uma Oya hydropower project?",
+          "What are the energy efficiency standards for buildings in Sri Lanka?"
+        ];
+      case 'visualize':
+        return [
+          "Generate the electricity demand for Sri Lanka in past 5 years",
+          "Show me the renewable energy capacity growth in Sri Lanka",
+          "Compare hydropower vs solar energy production in Sri Lanka",
+          "Visualize the energy mix evolution in Sri Lanka from 2010 to 2023"
+        ];
+      case 'insights':
+        return [
+          "What are the key policies for renewable energy development in Sri Lanka?",
+          "Explain Sri Lanka's National Energy Policy and its objectives",
+          "What incentives are available for private investors in renewable energy?",
+          "How does Sri Lanka's energy policy align with global climate commitments?"
+        ];
+      default:
+        return [
+          "What are the main renewable energy resources in Sri Lanka?",
+          "Generate the electricity demand for Sri Lanka in past 5 years",
+          "What are the major hydropower projects in Sri Lanka?",
+          "How is climate change affecting Sri Lanka's energy production?"
+        ];
+    }
+  };
 
   const handleExampleClick = (example: string) => {
     setQuery(example);
@@ -40,7 +71,11 @@ const QuerySection: React.FC<QuerySectionProps> = ({ onSubmit, isLoading }) => {
     >
       <div className="flex items-center mb-4 gap-2">
         <HelpCircle className="w-5 h-5 text-srigreen-700" />
-        <h2 className="text-xl font-medium text-gray-800">Ask About Sri Lankan Energy Sector</h2>
+        <h2 className="text-xl font-medium text-gray-800">
+          {sectionType === 'search' && "Ask About Sri Lankan Energy Sector"}
+          {sectionType === 'visualize' && "Visualize Sri Lankan Energy Data"}
+          {sectionType === 'insights' && "Explore Sri Lankan Energy Policies"}
+        </h2>
       </div>
       
       <form onSubmit={handleSubmit}>
@@ -52,7 +87,13 @@ const QuerySection: React.FC<QuerySectionProps> = ({ onSubmit, isLoading }) => {
             id="query"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type your question about Sri Lanka's energy sector..."
+            placeholder={
+              sectionType === 'search' 
+                ? "Type your question about Sri Lanka's energy sector..." 
+                : sectionType === 'visualize'
+                  ? "Ask for specific energy data visualization..."
+                  : "Ask about energy policies and regulations..."
+            }
             className="min-h-[120px] w-full resize-none border-gray-300 focus:border-srigreen-600 focus:ring-srigreen-600 transition-all duration-200"
           />
         </div>
@@ -72,7 +113,7 @@ const QuerySection: React.FC<QuerySectionProps> = ({ onSubmit, isLoading }) => {
       <div className="mt-6">
         <p className="text-sm text-gray-500 mb-2">Example queries:</p>
         <div className="flex flex-wrap gap-2">
-          {exampleQueries.map((example, index) => (
+          {getExampleQueries().map((example, index) => (
             <motion.button
               key={index}
               className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1 rounded-full transition-all duration-200"
