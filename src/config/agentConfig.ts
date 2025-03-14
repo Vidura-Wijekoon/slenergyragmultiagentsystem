@@ -16,6 +16,14 @@ export interface Agent {
   promptCount?: number;
 }
 
+export interface SubAgent {
+  id: string;
+  name: string;
+  description: string;
+  function: string;
+  color: string;
+}
+
 export interface AgentPool {
   id: string;
   name: string;
@@ -26,76 +34,77 @@ export interface AgentPool {
 // Main agent definitions
 export const agents: Agent[] = [
   {
-    id: 'master',
-    name: 'Master Agent',
+    id: 'coordinator',
+    name: 'Coordinator Agent',
     description: 'Coordinates the entire query workflow and manages sub-agents',
-    color: '#FFD700',
+    color: '#8B5CF6',
     icon: 'Bot',
     role: 'Coordination and orchestration of the entire workflow'
   },
   {
-    id: 'forecasting',
-    name: 'Forecasting Agent',
-    description: 'Analyzes time-series data and predicts future trends in energy production and consumption',
-    color: '#FFA500',
-    icon: 'LineChart',
-    role: 'Time-series analysis and prediction',
-    promptCount: 10
+    id: 'workflow',
+    name: 'Workflow Manager Agent',
+    description: 'Manages the workflow and assigns tasks to sub-agents',
+    color: '#EC4899',
+    icon: 'GitBranch',
+    role: 'Workflow management and task assignment',
+    promptCount: 15
   },
   {
-    id: 'imputation',
-    name: 'Imputation Agent',
-    description: 'Fills in missing data in energy datasets to provide complete analysis',
-    color: '#FF6B6B',
-    icon: 'Database',
-    role: 'Data completion and gap filling',
-    promptCount: 8
-  },
-  {
-    id: 'classification',
-    name: 'Classification Agent',
-    description: 'Categorizes and organizes energy policy data and research',
-    color: '#4682B4',
-    icon: 'Folder',
-    role: 'Information categorization and organization',
+    id: 'assistant',
+    name: 'Assistant Agent',
+    description: 'Assists the coordinator agent in processing complex queries',
+    color: '#F472B6',
+    icon: 'HelpingHand',
+    role: 'Assistant to the coordinator',
     promptCount: 12
+  }
+];
+
+// Sub-agent definitions
+export const subAgents: SubAgent[] = [
+  {
+    id: 'sub-agent-1',
+    name: 'Retriever Agent',
+    description: 'Retrieves relevant information from the knowledge base',
+    function: 'Data retrieval and vector search',
+    color: '#0EA5E9'
   },
   {
-    id: 'anomaly',
-    name: 'Anomaly Detection Agent',
-    description: 'Identifies unusual patterns in energy data that may require attention',
-    color: '#FF8C00',
-    icon: 'AlertTriangle',
-    role: 'Outlier detection and data validation',
-    promptCount: 6
+    id: 'sub-agent-2',
+    name: 'Analyzer Agent',
+    description: 'Analyzes and processes the retrieved information',
+    function: 'Data analysis and processing',
+    color: '#8B5CF6'
+  },
+  {
+    id: 'sub-agent-3',
+    name: 'Synthesizer Agent',
+    description: 'Synthesizes the analyzed information into a coherent response',
+    function: 'Response generation and formatting',
+    color: '#10B981'
   }
 ];
 
 // Agent pools that group agents by functionality
 export const agentPools: AgentPool[] = [
   {
-    id: 'forecasting-pool',
-    name: 'Forecasting Pool',
-    agents: [agents.find(a => a.id === 'forecasting')!],
-    color: '#FFEFD5'
+    id: 'coordinator-pool',
+    name: 'Coordinator Pool',
+    agents: [agents.find(a => a.id === 'coordinator')!],
+    color: '#EDE9FE'
   },
   {
-    id: 'imputation-pool',
-    name: 'Imputation Pool',
-    agents: [agents.find(a => a.id === 'imputation')!],
-    color: '#FFE4E1'
+    id: 'workflow-pool',
+    name: 'Workflow Pool',
+    agents: [agents.find(a => a.id === 'workflow')!],
+    color: '#FCE7F3'
   },
   {
-    id: 'classification-pool',
-    name: 'Classification Pool',
-    agents: [agents.find(a => a.id === 'classification')!],
-    color: '#E6E6FA'
-  },
-  {
-    id: 'anomaly-pool',
-    name: 'Anomaly Detection Pool',
-    agents: [agents.find(a => a.id === 'anomaly')!],
-    color: '#FFEFD5'
+    id: 'assistant-pool',
+    name: 'Assistant Pool',
+    agents: [agents.find(a => a.id === 'assistant')!],
+    color: '#FBCFE8'
   }
 ];
 
@@ -104,37 +113,44 @@ export const queryPipeline = [
   {
     step: 1,
     name: 'Query Reception',
-    agentId: 'master',
+    agentId: 'coordinator',
     description: 'User query is received and initial analysis is performed'
   },
   {
     step: 2,
-    name: 'Task Delegation',
-    agentId: 'master',
-    description: 'Master agent determines which specialized agents to engage'
+    name: 'Workflow Planning',
+    agentId: 'workflow',
+    description: 'Workflow manager determines the optimal processing path'
   },
   {
     step: 3,
-    name: 'Parallel Processing',
-    agentId: 'multiple',
-    description: 'Multiple agents process the query in parallel according to their specialization'
+    name: 'Information Retrieval',
+    agentId: 'sub-agent-1',
+    description: 'Retriever agent extracts relevant data from knowledge base'
   },
   {
     step: 4,
-    name: 'Result Aggregation',
-    agentId: 'master',
-    description: 'Results from all sub-agents are collected and compiled'
+    name: 'Data Analysis',
+    agentId: 'sub-agent-2',
+    description: 'Analyzer agent processes the retrieved information'
   },
   {
     step: 5,
-    name: 'Response Generation',
-    agentId: 'master',
-    description: 'Final response is created and returned to the user'
+    name: 'Response Synthesis',
+    agentId: 'sub-agent-3',
+    description: 'Synthesizer agent creates a coherent response'
+  },
+  {
+    step: 6,
+    name: 'Final Coordination',
+    agentId: 'coordinator',
+    description: 'Final response is reviewed and returned to the user'
   }
 ];
 
 export default {
   agents,
+  subAgents,
   agentPools,
   queryPipeline
 };
