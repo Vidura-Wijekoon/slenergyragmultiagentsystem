@@ -59,7 +59,7 @@ const Header: React.FC = () => {
           <div>
             <h1 className="text-lg md:text-xl font-bold flex items-center gap-2">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-purple-300">
-                අපි බලය පිරිවරන් පියවර
+                බලශක්තිය අනාගතයයි
               </span>
             </h1>
             <p className="text-xs md:text-sm text-indigo-200">Ministry of Power and Energy</p>

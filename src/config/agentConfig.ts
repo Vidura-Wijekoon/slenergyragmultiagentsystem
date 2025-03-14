@@ -43,7 +43,7 @@ export const agents: Agent[] = [
   },
   {
     id: 'workflow',
-    name: 'Workflow Manager Agent',
+    name: 'Workflow Manager',
     description: 'Manages the workflow and assigns tasks to sub-agents',
     color: '#EC4899',
     icon: 'GitBranch',
@@ -65,23 +65,23 @@ export const agents: Agent[] = [
 export const subAgents: SubAgent[] = [
   {
     id: 'sub-agent-1',
-    name: 'Retriever Agent',
+    name: 'Sub Agent 1',
     description: 'Retrieves relevant information from the knowledge base',
-    function: 'Data retrieval and vector search',
+    function: 'Retriever',
     color: '#0EA5E9'
   },
   {
     id: 'sub-agent-2',
-    name: 'Analyzer Agent',
+    name: 'Sub Agent 2',
     description: 'Analyzes and processes the retrieved information',
-    function: 'Data analysis and processing',
+    function: 'Analyzer',
     color: '#8B5CF6'
   },
   {
     id: 'sub-agent-3',
-    name: 'Synthesizer Agent',
+    name: 'Sub Agent 3',
     description: 'Synthesizes the analyzed information into a coherent response',
-    function: 'Response generation and formatting',
+    function: 'Synthesizer',
     color: '#10B981'
   }
 ];
@@ -118,33 +118,39 @@ export const queryPipeline = [
   },
   {
     step: 2,
-    name: 'Workflow Planning',
-    agentId: 'workflow',
-    description: 'Workflow manager determines the optimal processing path'
+    name: 'Agentic RAGs Processing',
+    agentId: 'coordinator',
+    description: 'Coordinator agent processes query through Agentic RAGs'
   },
   {
     step: 3,
-    name: 'Information Retrieval',
-    agentId: 'sub-agent-1',
-    description: 'Retriever agent extracts relevant data from knowledge base'
+    name: 'Sub-Agent Distribution',
+    agentId: 'workflow',
+    description: 'Workflow manager distributes tasks to specialized sub-agents'
   },
   {
     step: 4,
-    name: 'Data Analysis',
-    agentId: 'sub-agent-2',
-    description: 'Analyzer agent processes the retrieved information'
+    name: 'Information Retrieval',
+    agentId: 'sub-agent-1',
+    description: 'Sub Agent 1 retrieves relevant data (Retriever)'
   },
   {
     step: 5,
-    name: 'Response Synthesis',
-    agentId: 'sub-agent-3',
-    description: 'Synthesizer agent creates a coherent response'
+    name: 'Data Analysis',
+    agentId: 'sub-agent-2',
+    description: 'Sub Agent 2 processes the retrieved information (Analyzer)'
   },
   {
     step: 6,
-    name: 'Final Coordination',
+    name: 'Response Synthesis',
+    agentId: 'sub-agent-3',
+    description: 'Sub Agent 3 creates a coherent response (Synthesizer)'
+  },
+  {
+    step: 7,
+    name: 'Final Response Generation',
     agentId: 'coordinator',
-    description: 'Final response is reviewed and returned to the user'
+    description: 'Final response is generated and returned to the user'
   }
 ];
 

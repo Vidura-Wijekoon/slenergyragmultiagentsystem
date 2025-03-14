@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
-import { Bot, ArrowRight, GitBranch, Database, HardDrive, ChevronLeft, HelpingHand, Search, PenTool } from 'lucide-react';
+import { Bot, ArrowRight, GitBranch, Database, HardDrive, ChevronLeft, HelpingHand, Search, PenTool, Cpu, Network } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { agents, subAgents, queryPipeline } from '@/config/agentConfig';
@@ -35,7 +35,7 @@ const AgentArchitecture: React.FC = () => {
               
               <div className="flex justify-center mb-8">
                 <img 
-                  src="/lovable-uploads/0e22b9d3-a942-4774-8e55-e7309ee80559.png" 
+                  src="/lovable-uploads/300ff467-e9a8-4552-871c-5fe8b898814c.png" 
                   alt="Multi-Agent System Architecture" 
                   className="max-w-full md:max-w-2xl rounded-lg border border-indigo-200 shadow-sm"
                 />
@@ -55,7 +55,7 @@ const AgentArchitecture: React.FC = () => {
                   <h4 className="text-md font-semibold ml-6 text-purple-800">Coordinator Agent</h4>
                   <p className="text-sm text-gray-600 mt-2">
                     The central coordinator that manages the entire query processing pipeline. It receives user queries, 
-                    delegates to specialized sub-agents, and synthesizes the final response.
+                    leverages Agentic RAGs, and coordinates with sub-agents to produce comprehensive responses.
                   </p>
                 </motion.div>
                 
@@ -89,6 +89,29 @@ const AgentArchitecture: React.FC = () => {
                     Plans and manages the query processing workflow. It determines which sub-agents to engage
                     and in what sequence for optimal information processing.
                   </p>
+                </motion.div>
+              </div>
+
+              <h3 className="text-lg font-medium text-gray-800 mb-4">Agentic RAGs</h3>
+              <div className="p-6 rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-indigo-50 mb-8">
+                <motion.div
+                  className="p-4 rounded-lg bg-white/70 border border-blue-100 shadow-sm"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: 0.4 }}
+                >
+                  <div className="flex items-center mb-2">
+                    <Cpu className="w-5 h-5 text-blue-600 mr-2" />
+                    <h4 className="text-md font-semibold">Retrieval-Augmented Generation</h4>
+                  </div>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Our system employs advanced Agentic RAGs (Retrieval-Augmented Generation) technology to enhance query processing.
+                    This approach combines the power of large language models with the ability to retrieve and reference specific information
+                    from our comprehensive Sri Lanka energy sector knowledge base.
+                  </p>
+                  <div className="text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-800 inline-block">
+                    Enhanced information retrieval and context preservation
+                  </div>
                 </motion.div>
               </div>
               
@@ -152,6 +175,7 @@ const AgentArchitecture: React.FC = () => {
                   <li>Advanced NLP techniques parse and understand user queries</li>
                   <li>Real-time data integration with Ceylon Electricity Board systems</li>
                   <li>Future forecasting capabilities powered by machine learning models</li>
+                  <li>Agentic RAGs provide context-aware information retrieval and processing</li>
                 </ul>
               </div>
             </div>
