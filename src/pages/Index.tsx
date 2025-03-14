@@ -2,7 +2,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
-import { Search, BarChart3, Lightbulb } from 'lucide-react';
+import { Search, BarChart3, Lightbulb, Network } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
 import FeatureCard from '@/components/FeatureCard';
 import QuerySection from '@/components/QuerySection';
@@ -10,6 +11,7 @@ import ResultsSection from '@/components/ResultsSection';
 import DataSection from '@/components/DataSection';
 import PolicySection from '@/components/PolicySection';
 import { submitQuery } from '@/utils/api';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -130,6 +132,16 @@ const Index = () => {
       
       <main className="flex-1 py-8 px-4 md:px-8">
         <div className="max-w-7xl mx-auto">
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-2xl font-bold text-gray-800">Sri Lanka Energy Knowledge Base</h1>
+            <Button variant="outline" asChild className="flex items-center gap-1">
+              <Link to="/agent-architecture">
+                <Network className="w-4 h-4" />
+                <span className="hidden sm:inline">View Agent Architecture</span>
+              </Link>
+            </Button>
+          </div>
+          
           <motion.div 
             className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
             initial={{ opacity: 0 }}

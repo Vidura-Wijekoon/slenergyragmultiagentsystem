@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { HelpCircle, Send } from 'lucide-react';
+import { HelpCircle, Send, Bot, Network } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface QuerySectionProps {
   onSubmit: (query: string) => void;
@@ -18,6 +20,7 @@ const QuerySection: React.FC<QuerySectionProps> = ({
   sectionType = 'search' 
 }) => {
   const [query, setQuery] = useState('');
+  const [showAgentInfo, setShowAgentInfo] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +66,35 @@ const QuerySection: React.FC<QuerySectionProps> = ({
     setQuery(example);
   };
 
+  // Define the agents used in the pipeline
+  const agentTypes = [
+    { 
+      name: 'Master Agent', 
+      description: 'Coordinates the workflow and delegates tasks to specialized sub-agents', 
+      icon: <Bot className="h-4 w-4 text-yellow-500" /> 
+    },
+    { 
+      name: 'Forecasting Agent', 
+      description: 'Analyzes time-series data and predicts future trends in energy production and consumption', 
+      icon: <Bot className="h-4 w-4 text-amber-500" /> 
+    },
+    { 
+      name: 'Imputation Agent', 
+      description: 'Fills in missing data in energy datasets to provide complete analysis', 
+      icon: <Bot className="h-4 w-4 text-rose-400" /> 
+    },
+    { 
+      name: 'Classification Agent', 
+      description: 'Categorizes and organizes energy policy data and research', 
+      icon: <Bot className="h-4 w-4 text-blue-400" /> 
+    },
+    { 
+      name: 'Anomaly Detection Agent', 
+      description: 'Identifies unusual patterns in energy data that may require attention', 
+      icon: <Bot className="h-4 w-4 text-orange-500" /> 
+    }
+  ];
+
   return (
     <motion.div 
       className="w-full bg-white rounded-xl shadow-sm border border-gray-200 p-6 overflow-hidden"
@@ -70,14 +102,58 @@ const QuerySection: React.FC<QuerySectionProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2 }}
     >
-      <div className="flex items-center mb-4 gap-2">
-        <HelpCircle className="w-5 h-5 text-srigreen-700" />
-        <h2 className="text-xl font-medium text-gray-800">
-          {sectionType === 'search' && "Ask About Sri Lankan Energy Sector"}
-          {sectionType === 'visualize' && "Visualize Sri Lankan Energy Data"}
-          {sectionType === 'insights' && "Explore Sri Lankan Energy Policies"}
-        </h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <HelpCircle className="w-5 h-5 text-srigreen-700" />
+          <h2 className="text-xl font-medium text-gray-800">
+            {sectionType === 'search' && "Ask About Sri Lankan Energy Sector"}
+            {sectionType === 'visualize' && "Visualize Sri Lankan Energy Data"}
+            {sectionType === 'insights' && "Explore Sri Lankan Energy Policies"}
+          </h2>
+        </div>
+        
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowAgentInfo(!showAgentInfo)}
+          className="flex items-center gap-1"
+        >
+          <Network className="w-4 h-4" />
+          <span className="text-xs">{showAgentInfo ? 'Hide Agents' : 'Show Agents'}</span>
+        </Button>
       </div>
+      
+      {showAgentInfo && (
+        <motion.div 
+          className="mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200"
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+        >
+          <p className="text-sm text-gray-700 mb-2 font-medium">Multi-Agent Pipeline:</p>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {agentTypes.map((agent, index) => (
+              <TooltipProvider key={index}>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Badge 
+                      variant={index === 0 ? "default" : "outline"} 
+                      className={`flex items-center gap-1 cursor-help ${index === 0 ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' : ''}`}
+                    >
+                      {agent.icon}
+                      {agent.name}
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="text-xs max-w-[200px]">{agent.description}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
+          </div>
+          <p className="text-xs text-gray-500">Your query will be processed through this intelligent agent system to provide accurate information and analysis.</p>
+        </motion.div>
+      )}
       
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

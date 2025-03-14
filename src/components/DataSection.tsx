@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { BarChart3, Send, FileText, X, BarChart, LineChart, PieChart } from 'lucide-react';
+import { BarChart3, Send, FileText, X, BarChart, LineChart, PieChart, Network, Bot } from 'lucide-react';
 import LoadingIndicator from './LoadingIndicator';
 import DataVisualization, { ChartType } from './DataVisualization';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -38,6 +37,7 @@ const DataSection: React.FC<DataSectionProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [preferredChartType, setPreferredChartType] = useState<ChartType>('line');
+  const [showAgentInfo, setShowAgentInfo] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -59,6 +59,29 @@ const DataSection: React.FC<DataSectionProps> = ({
     setQuery(example);
   };
 
+  const visualizationAgents = [
+    { 
+      name: 'Master Agent', 
+      description: 'Coordinates the entire visualization process', 
+      icon: <Bot className="h-4 w-4 text-yellow-500" /> 
+    },
+    { 
+      name: 'Forecasting Agent', 
+      description: 'Specializes in time-series analysis and trend prediction', 
+      icon: <Bot className="h-4 w-4 text-amber-500" /> 
+    },
+    { 
+      name: 'Data Transformation Agent', 
+      description: 'Cleans and transforms raw data for visualization', 
+      icon: <Bot className="h-4 w-4 text-blue-400" /> 
+    },
+    { 
+      name: 'Visualization Agent', 
+      description: 'Determines the optimal visualization type for your data', 
+      icon: <Bot className="h-4 w-4 text-green-500" /> 
+    }
+  ];
+
   return (
     <>
       <motion.div 
@@ -67,10 +90,43 @@ const DataSection: React.FC<DataSectionProps> = ({
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
       >
-        <div className="flex items-center mb-4 gap-2">
-          <BarChart3 className="w-5 h-5 text-srigreen-700" />
-          <h2 className="text-xl font-medium text-gray-800">Visualize Sri Lankan Energy Data</h2>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-srigreen-700" />
+            <h2 className="text-xl font-medium text-gray-800">Visualize Sri Lankan Energy Data</h2>
+          </div>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowAgentInfo(!showAgentInfo)}
+            className="flex items-center gap-1"
+          >
+            <Network className="w-4 h-4" />
+            <span className="text-xs">{showAgentInfo ? 'Hide Agents' : 'Show Agents'}</span>
+          </Button>
         </div>
+        
+        {showAgentInfo && (
+          <motion.div 
+            className="mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <p className="text-sm text-gray-700 mb-2 font-medium">Visualization Agent Pipeline:</p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {visualizationAgents.map((agent, index) => (
+                <div key={index} className="flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-xs">
+                  {agent.icon}
+                  <span className="font-medium">{agent.name}</span>
+                  <span className="text-gray-500">- {agent.description}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500">The Visualization pipeline is optimized for generating high-quality data charts and graphs.</p>
+          </motion.div>
+        )}
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
