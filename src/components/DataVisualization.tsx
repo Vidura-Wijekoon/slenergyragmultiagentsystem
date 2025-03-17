@@ -150,9 +150,11 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
         
       case 'pie':
         return (
-          <PieChart>
+          <PieChart margin={margin}>
             <Pie
               data={data}
+              cx="50%"
+              cy="50%"
               innerRadius={60}
               outerRadius={80}
               paddingAngle={5}
@@ -160,6 +162,8 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
               nameKey={xKey}
               labelLine={false}
               label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+              animationBegin={0}
+              animationDuration={1000}
             >
               {data.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -171,8 +175,14 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
                 border: '1px solid #ddd',
                 borderRadius: '4px'
               }} 
+              formatter={(value, name) => [`${value} (${((value / data.reduce((sum, entry) => sum + entry[yKey], 0)) * 100).toFixed(1)}%)`, name]}
             />
-            <Legend />
+            <Legend 
+              layout="horizontal" 
+              verticalAlign="bottom" 
+              align="center"
+              wrapperStyle={{ paddingTop: 20 }}
+            />
           </PieChart>
         );
         

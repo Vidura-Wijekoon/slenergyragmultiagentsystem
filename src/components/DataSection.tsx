@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ interface DataSectionProps {
     title: string;
     xKey: string;
     yKey: string;
+    additionalKeys?: string[];
   } | null;
   onClear: () => void;
 }
@@ -81,6 +83,38 @@ const DataSection: React.FC<DataSectionProps> = ({
       icon: <Bot className="h-4 w-4 text-green-500" /> 
     }
   ];
+
+  // Function to render the appropriate visualization
+  const renderVisualization = () => {
+    if (!visualizationData) return null;
+
+    return (
+      <DataVisualization
+        data={visualizationData.data}
+        type={preferredChartType}
+        title={visualizationData.title}
+        xKey={visualizationData.xKey}
+        yKey={visualizationData.yKey}
+        additionalKeys={visualizationData.additionalKeys}
+        height={350}
+      />
+    );
+  };
+
+  // Determine which chart types can be used with the current data
+  const getAvailableChartTypes = () => {
+    if (!visualizationData) return ['line', 'bar', 'pie', 'area'];
+    
+    // Pie charts work best with categorical data
+    const isPieCompatible = !visualizationData.additionalKeys || visualizationData.additionalKeys.length === 0;
+    
+    // If data has multiple series, don't allow pie charts (unless it's already a pie)
+    if (visualizationData.additionalKeys && visualizationData.additionalKeys.length > 0) {
+      return ['line', 'bar', 'area'];
+    }
+    
+    return ['line', 'bar', 'pie', 'area'];
+  };
 
   return (
     <>
@@ -273,10 +307,18 @@ const DataSection: React.FC<DataSectionProps> = ({
                   >
                     <Tabs defaultValue={visualizationData.type}>
                       <TabsList className="mb-4">
-                        <TabsTrigger value="line" disabled={!['line', 'area'].includes(visualizationData.type)}>Line</TabsTrigger>
-                        <TabsTrigger value="bar" disabled={!['bar'].includes(visualizationData.type)}>Bar</TabsTrigger>
-                        <TabsTrigger value="pie" disabled={!['pie'].includes(visualizationData.type)}>Pie</TabsTrigger>
-                        <TabsTrigger value="area" disabled={!['area', 'line'].includes(visualizationData.type)}>Area</TabsTrigger>
+                        {getAvailableChartTypes().includes('line') && 
+                          <TabsTrigger value="line">Line</TabsTrigger>
+                        }
+                        {getAvailableChartTypes().includes('bar') && 
+                          <TabsTrigger value="bar">Bar</TabsTrigger>
+                        }
+                        {getAvailableChartTypes().includes('pie') && 
+                          <TabsTrigger value="pie">Pie</TabsTrigger>
+                        }
+                        {getAvailableChartTypes().includes('area') && 
+                          <TabsTrigger value="area">Area</TabsTrigger>
+                        }
                       </TabsList>
                       
                       <TabsContent value="line">
@@ -286,6 +328,7 @@ const DataSection: React.FC<DataSectionProps> = ({
                           title={visualizationData.title}
                           xKey={visualizationData.xKey}
                           yKey={visualizationData.yKey}
+                          additionalKeys={visualizationData.additionalKeys}
                           height={350}
                         />
                       </TabsContent>
@@ -297,6 +340,7 @@ const DataSection: React.FC<DataSectionProps> = ({
                           title={visualizationData.title}
                           xKey={visualizationData.xKey}
                           yKey={visualizationData.yKey}
+                          additionalKeys={visualizationData.additionalKeys}
                           height={350}
                         />
                       </TabsContent>
@@ -319,6 +363,7 @@ const DataSection: React.FC<DataSectionProps> = ({
                           title={visualizationData.title}
                           xKey={visualizationData.xKey}
                           yKey={visualizationData.yKey}
+                          additionalKeys={visualizationData.additionalKeys}
                           height={350}
                         />
                       </TabsContent>

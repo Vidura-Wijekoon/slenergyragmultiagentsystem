@@ -1,3 +1,4 @@
+
 // This is a mock API for frontend demonstration
 // In a real application, this would connect to the Python backend
 
@@ -5,10 +6,11 @@ interface QueryResponse {
   answer: string;
   visualization?: {
     data: any[];
-    type: 'line' | 'bar' | 'pie' | 'area';
+    type: 'line' | 'bar' | 'pie' | 'area' | 'radar' | 'composed';
     title: string;
     xKey: string;
     yKey: string;
+    additionalKeys?: string[];
   };
 }
 
@@ -45,6 +47,32 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
           ],
           type: 'pie',
           title: 'Renewable Energy Resources Distribution in Sri Lanka (%)',
+          xKey: 'name',
+          yKey: 'value'
+        }
+      };
+    } else if (lowerQuery.includes('energy landscape') || lowerQuery.includes('current energy landscape')) {
+      return {
+        answer: `
+          <h3>Current Energy Landscape of Sri Lanka</h3>
+          <p>Sri Lanka's energy landscape is characterized by a diverse mix of conventional and renewable sources:</p>
+          <ul>
+            <li><strong>Fossil Fuels:</strong> Still account for approximately 55% of the total energy mix, primarily in thermal power plants and transportation.</li>
+            <li><strong>Hydropower:</strong> Contributing around 30% of the electricity generation, dependent on seasonal rainfall patterns.</li>
+            <li><strong>Other Renewables:</strong> Growing rapidly, with solar, wind, biomass, and mini-hydro collectively accounting for about 15% of electricity generation.</li>
+          </ul>
+          <p>The country is actively working toward transitioning to cleaner energy sources, with a national target of achieving 70% renewable energy in the electricity mix by 2030.</p>
+        `,
+        visualization: {
+          data: [
+            { name: 'Fossil Fuels', value: 55 },
+            { name: 'Hydropower', value: 30 },
+            { name: 'Solar', value: 8 },
+            { name: 'Wind', value: 4 },
+            { name: 'Biomass', value: 3 }
+          ],
+          type: 'pie',
+          title: 'Sri Lanka Energy Mix (2023)',
           xKey: 'name',
           yKey: 'value'
         }
@@ -163,7 +191,65 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
           type: 'bar',
           title: 'Hydropower vs Solar Energy Production (GWh)',
           xKey: 'year',
-          yKey: 'capacity'
+          yKey: 'Hydropower',
+          additionalKeys: ['Solar']
+        }
+      };
+    } else if (lowerQuery.includes('energy mix evolution') || lowerQuery.includes('2010 to 2023')) {
+      return {
+        answer: `
+          <h3>Energy Mix Evolution in Sri Lanka (2010-2023)</h3>
+          <p>Sri Lanka's energy mix has undergone significant changes over the past decade:</p>
+          <ul>
+            <li><strong>Fossil Fuels:</strong> Decreased from 67% in 2010 to 55% in 2023.</li>
+            <li><strong>Hydropower:</strong> Relatively stable, fluctuating between 28-35% based on rainfall patterns.</li>
+            <li><strong>Solar:</strong> Dramatic increase from negligible amounts in 2010 to 8% in 2023.</li>
+            <li><strong>Wind:</strong> Growth from less than 1% in 2010 to 4% in 2023.</li>
+            <li><strong>Biomass:</strong> Steady increase to 3% of the energy mix.</li>
+          </ul>
+          <p>This evolution reflects Sri Lanka's commitment to transitioning toward cleaner energy sources and reducing dependence on imported fossil fuels.</p>
+        `,
+        visualization: {
+          data: [
+            { year: '2010', 'Fossil Fuels': 67, 'Hydropower': 30, 'Solar': 0.1, 'Wind': 0.5, 'Biomass': 2.4 },
+            { year: '2015', 'Fossil Fuels': 63, 'Hydropower': 29, 'Solar': 1.5, 'Wind': 2.0, 'Biomass': 4.5 },
+            { year: '2020', 'Fossil Fuels': 58, 'Hydropower': 31, 'Solar': 6.0, 'Wind': 3.0, 'Biomass': 2.0 },
+            { year: '2023', 'Fossil Fuels': 55, 'Hydropower': 30, 'Solar': 8.0, 'Wind': 4.0, 'Biomass': 3.0 }
+          ],
+          type: 'bar',
+          title: 'Energy Mix Evolution in Sri Lanka (2010-2023)',
+          xKey: 'year',
+          yKey: 'Fossil Fuels',
+          additionalKeys: ['Hydropower', 'Solar', 'Wind', 'Biomass']
+        }
+      };
+    } else if (lowerQuery.includes('pie') || lowerQuery.includes('chart type: pie')) {
+      // Case when user explicitly requests a pie chart
+      return {
+        answer: `
+          <h3>Sri Lanka Energy Mix (2023)</h3>
+          <p>The current energy mix in Sri Lanka shows a gradual transition toward renewable sources:</p>
+          <ul>
+            <li><strong>Fossil Fuels:</strong> 55% (Coal and oil-based generation)</li>
+            <li><strong>Hydropower:</strong> 30% (Large-scale and mini-hydro projects)</li>
+            <li><strong>Solar:</strong> 8% (Both utility-scale and rooftop installations)</li>
+            <li><strong>Wind:</strong> 4% (Primarily from Mannar Wind Power Project and other coastal installations)</li>
+            <li><strong>Biomass & Others:</strong> 3% (Agricultural waste and dedicated energy crops)</li>
+          </ul>
+          <p>The government's policy framework aims to further reduce fossil fuel dependency and increase the share of renewables to 70% by 2030.</p>
+        `,
+        visualization: {
+          data: [
+            { name: 'Fossil Fuels', value: 55 },
+            { name: 'Hydropower', value: 30 },
+            { name: 'Solar', value: 8 },
+            { name: 'Wind', value: 4 },
+            { name: 'Biomass & Others', value: 3 }
+          ],
+          type: 'pie',
+          title: 'Sri Lanka Energy Mix (2023)',
+          xKey: 'name',
+          yKey: 'value'
         }
       };
     }
@@ -185,7 +271,20 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
             <li><strong>Renewable Energy Development Zones:</strong> Designated areas with streamlined approval processes and infrastructure support for renewable energy projects.</li>
           </ul>
           <p>These policies are complemented by the Sustainable Energy Authority Act, which established a dedicated agency to drive sustainable energy development in the country.</p>
-        `
+        `,
+        visualization: {
+          data: [
+            { policy: 'FiT Scheme', impact: 85 },
+            { policy: 'Tax Incentives', impact: 75 },
+            { policy: 'Net Metering', impact: 70 },
+            { policy: 'Green Energy Fund', impact: 65 },
+            { policy: 'Development Zones', impact: 60 }
+          ],
+          type: 'bar',
+          title: 'Estimated Impact of Renewable Energy Policies (Scale 0-100)',
+          xKey: 'policy',
+          yKey: 'impact'
+        }
       };
     } else if (lowerQuery.includes('national energy policy') || lowerQuery.includes('policy objectives')) {
       return {
@@ -202,7 +301,22 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
             <li><strong>Research and Innovation:</strong> Supporting research, development, and demonstration of new energy technologies and solutions.</li>
           </ol>
           <p>The policy is implemented through a series of strategic actions and is overseen by the Ministry of Power and Energy in collaboration with the Sustainable Energy Authority, Ceylon Electricity Board, and other key stakeholders.</p>
-        `
+        `,
+        visualization: {
+          data: [
+            { objective: 'Renewable Integration', priority: 90 },
+            { objective: 'Energy Security', priority: 85 },
+            { objective: 'Environmental Sustainability', priority: 80 },
+            { objective: 'Energy Efficiency', priority: 75 },
+            { objective: 'Energy Equity', priority: 70 },
+            { objective: 'Market Development', priority: 65 },
+            { objective: 'Research & Innovation', priority: 60 }
+          ],
+          type: 'pie',
+          title: 'National Energy Policy Objectives by Priority',
+          xKey: 'objective',
+          yKey: 'priority'
+        }
       };
     } else if (lowerQuery.includes('incentives') || lowerQuery.includes('private investors')) {
       return {
@@ -225,7 +339,21 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
             <li><strong>One-Stop Shop:</strong> Streamlined approval process through the Sustainable Energy Authority to reduce bureaucratic delays.</li>
           </ul>
           <p>These incentives have successfully attracted both domestic and international investors to Sri Lanka's renewable energy sector, particularly in wind, solar, and small hydropower projects.</p>
-        `
+        `,
+        visualization: {
+          data: [
+            { incentive: 'SPPAs', effectiveness: 90 },
+            { incentive: 'Tax Holidays', effectiveness: 85 },
+            { incentive: 'Duty Exemptions', effectiveness: 80 },
+            { incentive: 'Cost-Based Tariffs', effectiveness: 75 },
+            { incentive: 'Green Certificates', effectiveness: 65 },
+            { incentive: 'Land Leasing', effectiveness: 60 }
+          ],
+          type: 'bar',
+          title: 'Effectiveness of Incentives for Private Investment',
+          xKey: 'incentive',
+          yKey: 'effectiveness'
+        }
       };
     }
   }
@@ -282,7 +410,7 @@ export async function submitQuery(query: string, section: 'search' | 'visualize'
             { source: 'Solar', output: 270 },
             { source: 'Biomass', output: 100 }
           ],
-          type: 'bar',
+          type: 'pie',
           title: 'Current Power Generation by Source (MW)',
           xKey: 'source',
           yKey: 'output'

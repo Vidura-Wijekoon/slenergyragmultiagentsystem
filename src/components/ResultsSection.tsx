@@ -16,6 +16,7 @@ interface ResultsSectionProps {
     title: string;
     xKey: string;
     yKey: string;
+    additionalKeys?: string[];
   } | null;
   onClear: () => void;
 }
@@ -161,6 +162,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
                         title={visualizationData.title}
                         xKey={visualizationData.xKey}
                         yKey={visualizationData.yKey}
+                        additionalKeys={visualizationData.additionalKeys}
                         height={350}
                       />
                     </motion.div>
