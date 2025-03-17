@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
@@ -10,6 +11,8 @@ import ResultsSection from '@/components/ResultsSection';
 import DataSection from '@/components/DataSection';
 import PolicySection from '@/components/PolicySection';
 import PowerDashboard from '@/components/PowerDashboard';
+import EnergyMetricsSection from '@/components/EnergyMetricsSection';
+import WorldEnergyMap from '@/components/WorldEnergyMap';
 import { submitQuery } from '@/utils/api';
 import { Button } from '@/components/ui/button';
 
@@ -204,6 +207,16 @@ const Index = () => {
           </motion.div>
           
           {renderActiveSection()}
+          
+          {/* Add the new Energy Metrics Section */}
+          <div className="mt-12 bg-white rounded-xl shadow-sm overflow-hidden">
+            <EnergyMetricsSection />
+          </div>
+          
+          {/* Add the World Energy Map */}
+          <div className="mt-12 bg-white rounded-xl shadow-sm overflow-hidden">
+            <WorldEnergyMap />
+          </div>
         </div>
       </main>
       
