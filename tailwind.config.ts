@@ -75,7 +75,15 @@ export default {
 					800: '#11492b',
 					900: '#103c26',
 					950: '#072116',
-				}
+				},
+				'soft-blue': '#D3E4FD',
+				'soft-purple': '#E5DEFF',
+				'soft-green': '#F2FCE2',
+				'soft-yellow': '#FEF7CD',
+				'soft-orange': '#FEC6A1',
+				'soft-pink': '#FFDEE2',
+				'soft-peach': '#FDE1D3',
+				'soft-gray': '#F1F0FB',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

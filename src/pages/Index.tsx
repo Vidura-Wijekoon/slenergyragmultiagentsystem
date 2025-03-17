@@ -208,25 +208,27 @@ const Index = () => {
           
           {/* Main interactive section */}
           <div className="mb-16">
-            {renderActiveSection()}
+            <div className="soft-card">
+              {renderActiveSection()}
+            </div>
           </div>
           
           {/* Enhanced visualization sections with better spacing and structure */}
           <div className="space-y-16">
             {/* Energy Metrics Section */}
-            <section className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
-              <div className="p-6 border-b border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-800">Energy Metrics Dashboard</h2>
-                <p className="text-sm text-gray-600 mt-1">Key performance indicators for Sri Lanka's energy sector</p>
+            <section className="bg-energy-metrics soft-card">
+              <div className="section-header">
+                <h2 className="section-title">Sri Lanka Energy Metrics & Indices</h2>
+                <p className="section-subtitle">Key metrics and indicators to understand the energy landscape of Sri Lanka</p>
               </div>
               <EnergyMetricsSection />
             </section>
             
             {/* World Energy Map Section */}
-            <section className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
-              <div className="p-6 border-b border-gray-100">
-                <h2 className="text-xl font-semibold text-gray-800">Global Energy Perspective</h2>
-                <p className="text-sm text-gray-600 mt-1">Compare Sri Lanka's energy profile with global statistics</p>
+            <section className="bg-global-map soft-card">
+              <div className="section-header">
+                <h2 className="section-title">Global Energy Perspective</h2>
+                <p className="section-subtitle">Compare Sri Lanka's energy profile with global statistics</p>
               </div>
               <WorldEnergyMap />
             </section>

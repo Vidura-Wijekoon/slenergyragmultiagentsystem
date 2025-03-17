@@ -105,4 +105,94 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-srigreen-700 to-srigreen-500;
   }
+  
+  /* Custom Background Classes */
+  .bg-energy-metrics {
+    @apply bg-gradient-to-b from-white to-soft-blue;
+  }
+  
+  .bg-energy-tabs {
+    @apply bg-indigo-800;
+  }
+  
+  .bg-global-map {
+    @apply bg-gradient-to-b from-white to-soft-purple/20;
+  }
+  
+  .bg-query-section {
+    @apply bg-gradient-to-r from-soft-blue/30 to-soft-purple/20;
+  }
+  
+  .bg-metrics-card {
+    @apply bg-gradient-to-br from-white to-soft-blue/20;
+  }
+}
+
+@layer components {
+  .soft-card {
+    @apply bg-white rounded-xl shadow-md overflow-hidden border border-gray-100;
+  }
+  
+  .section-header {
+    @apply p-6 border-b border-gray-100;
+  }
+  
+  .section-title {
+    @apply text-xl font-semibold text-gray-800;
+  }
+  
+  .section-subtitle {
+    @apply text-sm text-gray-600 mt-1;
+  }
+  
+  .metric-card {
+    @apply bg-metrics-card border border-gray-100 rounded-lg p-4 shadow-sm;
+  }
+  
+  .energy-tabs .tabs-list {
+    @apply bg-energy-tabs text-white p-2 rounded-t-lg;
+  }
+  
+  .energy-tabs .tab-item {
+    @apply px-4 py-2 rounded-md text-white/80 hover:text-white transition-colors;
+  }
+  
+  .energy-tabs .tab-item.active {
+    @apply bg-white text-indigo-800 font-medium;
+  }
+}
+
+/* Custom colors */
+@layer utilities {
+  .soft-blue {
+    @apply bg-[#D3E4FD];
+  }
+  
+  .soft-purple {
+    @apply bg-[#E5DEFF];
+  }
+  
+  .soft-green {
+    @apply bg-[#F2FCE2];
+  }
+  
+  .soft-yellow {
+    @apply bg-[#FEF7CD];
+  }
+  
+  .soft-orange {
+    @apply bg-[#FEC6A1];
+  }
+  
+  .soft-pink {
+    @apply bg-[#FFDEE2];
+  }
+  
+  .soft-peach {
+    @apply bg-[#FDE1D3];
+  }
+  
+  .soft-gray {
+    @apply bg-[#F1F0FB];
+  }
 }
