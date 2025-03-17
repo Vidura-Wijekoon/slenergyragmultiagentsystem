@@ -1,4 +1,3 @@
-
 // This is a mock API for frontend demonstration
 // In a real application, this would connect to the Python backend
 
@@ -15,8 +14,8 @@ interface QueryResponse {
 }
 
 export async function submitQuery(query: string, section: 'search' | 'visualize' | 'insights' | 'power' = 'search'): Promise<QueryResponse> {
-  // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 2000));
+  // Simulate API delay - reduced to 3-4 seconds total
+  await new Promise(resolve => setTimeout(resolve, 1000));
   
   // For demonstration, return mock data based on the query and section
   const lowerQuery = query.toLowerCase();

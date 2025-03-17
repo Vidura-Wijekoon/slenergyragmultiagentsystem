@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -63,28 +62,32 @@ const DataSection: React.FC<DataSectionProps> = ({
 
   const visualizationAgents = [
     { 
-      name: 'Master Agent', 
+      name: 'Coordinator Agent', 
       description: 'Coordinates the entire visualization process', 
-      icon: <Bot className="h-4 w-4 text-yellow-500" /> 
+      icon: <Bot className="h-4 w-4 text-purple-600" /> 
     },
     { 
-      name: 'Forecasting Agent', 
-      description: 'Specializes in time-series analysis and trend prediction', 
-      icon: <Bot className="h-4 w-4 text-amber-500" /> 
+      name: 'Workflow Manager', 
+      description: 'Manages the workflow and assigns tasks to sub-agents', 
+      icon: <Bot className="h-4 w-4 text-pink-600" /> 
     },
     { 
-      name: 'Data Transformation Agent', 
-      description: 'Cleans and transforms raw data for visualization', 
-      icon: <Bot className="h-4 w-4 text-blue-400" /> 
+      name: 'Sub Agent 1 (Retriever)', 
+      description: 'Retrieves relevant data from the knowledge base', 
+      icon: <Bot className="h-4 w-4 text-blue-500" /> 
     },
     { 
-      name: 'Visualization Agent', 
-      description: 'Determines the optimal visualization type for your data', 
+      name: 'Sub Agent 2 (Analyzer)', 
+      description: 'Analyzes the data and determines optimal visualization', 
+      icon: <Bot className="h-4 w-4 text-indigo-500" /> 
+    },
+    { 
+      name: 'Sub Agent 3 (Synthesizer)', 
+      description: 'Creates the final visualization and explanation', 
       icon: <Bot className="h-4 w-4 text-green-500" /> 
     }
   ];
 
-  // Function to render the appropriate visualization
   const renderVisualization = () => {
     if (!visualizationData) return null;
 
@@ -101,14 +104,11 @@ const DataSection: React.FC<DataSectionProps> = ({
     );
   };
 
-  // Determine which chart types can be used with the current data
   const getAvailableChartTypes = () => {
     if (!visualizationData) return ['line', 'bar', 'pie', 'area'];
     
-    // Pie charts work best with categorical data
     const isPieCompatible = !visualizationData.additionalKeys || visualizationData.additionalKeys.length === 0;
     
-    // If data has multiple series, don't allow pie charts (unless it's already a pie)
     if (visualizationData.additionalKeys && visualizationData.additionalKeys.length > 0) {
       return ['line', 'bar', 'area'];
     }
@@ -148,7 +148,7 @@ const DataSection: React.FC<DataSectionProps> = ({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
-            <p className="text-sm text-gray-700 mb-2 font-medium">Visualization Agent Pipeline:</p>
+            <p className="text-sm text-gray-700 mb-2 font-medium">Multi-Agent Pipeline:</p>
             <div className="flex flex-wrap gap-2 mb-2">
               {visualizationAgents.map((agent, index) => (
                 <div key={index} className="flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-xs">
@@ -158,7 +158,7 @@ const DataSection: React.FC<DataSectionProps> = ({
                 </div>
               ))}
             </div>
-            <p className="text-xs text-gray-500">The Visualization pipeline is optimized for generating high-quality data charts and graphs.</p>
+            <p className="text-xs text-gray-500">Your query will be processed through this intelligent agent system to provide accurate information and analysis.</p>
           </motion.div>
         )}
         

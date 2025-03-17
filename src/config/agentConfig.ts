@@ -48,7 +48,7 @@ export const agents: Agent[] = [
     color: '#EC4899',
     icon: 'GitBranch',
     role: 'Workflow management and task assignment',
-    promptCount: 15
+    promptCount: 5
   },
   {
     id: 'assistant',
@@ -57,7 +57,7 @@ export const agents: Agent[] = [
     color: '#F472B6',
     icon: 'HelpingHand',
     role: 'Assistant to the coordinator',
-    promptCount: 12
+    promptCount: 4
   }
 ];
 

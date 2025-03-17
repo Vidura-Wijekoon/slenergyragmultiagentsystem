@@ -32,12 +32,13 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
 
   // Define the processing steps to simulate the agent pipeline
   const processingSteps = [
-    { agent: 'Master Agent', status: 'completed', message: 'Analyzing query and coordinating sub-agents' },
-    { agent: 'Classification Agent', status: isLoading && currentStep >= 1 ? 'processing' : (currentStep > 1 ? 'completed' : 'waiting'), message: 'Categorizing query and relevant data sources' },
-    { agent: 'Forecasting Agent', status: isLoading && currentStep >= 2 ? 'processing' : (currentStep > 2 ? 'completed' : 'waiting'), message: 'Analyzing historical data trends' },
-    { agent: 'Imputation Agent', status: isLoading && currentStep >= 3 ? 'processing' : (currentStep > 3 ? 'completed' : 'waiting'), message: 'Filling gaps in data if needed' },
-    { agent: 'Anomaly Detection Agent', status: isLoading && currentStep >= 4 ? 'processing' : (currentStep > 4 ? 'completed' : 'waiting'), message: 'Validating data consistency' },
-    { agent: 'Master Agent', status: isLoading && currentStep >= 5 ? 'processing' : (currentStep > 5 ? 'completed' : 'waiting'), message: 'Compiling final response' }
+    { agent: 'Coordinator Agent', status: 'completed', message: 'Analyzing query and coordinating sub-agents' },
+    { agent: 'Workflow Manager', status: isLoading && currentStep >= 1 ? 'processing' : (currentStep > 1 ? 'completed' : 'waiting'), message: 'Managing workflow and assigning tasks' },
+    { agent: 'Assistant Agent', status: isLoading && currentStep >= 2 ? 'processing' : (currentStep > 2 ? 'completed' : 'waiting'), message: 'Supporting the coordinator with complex processing' },
+    { agent: 'Sub Agent 1 (Retriever)', status: isLoading && currentStep >= 3 ? 'processing' : (currentStep > 3 ? 'completed' : 'waiting'), message: 'Retrieving information from knowledge base' },
+    { agent: 'Sub Agent 2 (Analyzer)', status: isLoading && currentStep >= 4 ? 'processing' : (currentStep > 4 ? 'completed' : 'waiting'), message: 'Analyzing retrieved information' },
+    { agent: 'Sub Agent 3 (Synthesizer)', status: isLoading && currentStep >= 5 ? 'processing' : (currentStep > 5 ? 'completed' : 'waiting'), message: 'Synthesizing information into coherent response' },
+    { agent: 'Coordinator Agent', status: isLoading && currentStep >= 6 ? 'processing' : (currentStep > 6 ? 'completed' : 'waiting'), message: 'Generating final response' }
   ];
 
   // Use effect to advance the currentStep when isLoading is true
@@ -49,13 +50,14 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
       setShowProcessFlow(true);
       setCurrentStep(0);
       
-      // Create a timer to advance the steps
+      // Create a timer to advance the steps - faster now (3-4 seconds total)
       timer = setTimeout(() => {
         const advanceStep = () => {
           setCurrentStep(prev => {
             if (prev < processingSteps.length - 1) {
               const nextStep = prev + 1;
-              const stepDelay = [700, 900, 800, 600, 1000, 1200][nextStep] || 800;
+              // Faster step delays - each step takes ~400-500ms
+              const stepDelay = [400, 450, 400, 500, 450, 400, 400][nextStep] || 400;
               setTimeout(advanceStep, stepDelay);
               return nextStep;
             }
@@ -65,7 +67,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
         
         // Start advancing steps
         advanceStep();
-      }, 800);
+      }, 400); // Start first step faster
     } else {
       if (result) {
         setCurrentStep(processingSteps.length); // Complete all steps when result is available
@@ -92,16 +94,18 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
 
   const getAgentColor = (agent: string) => {
     switch (agent) {
-      case 'Master Agent':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'Classification Agent':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Forecasting Agent':
-        return 'bg-amber-100 text-amber-800 border-amber-200';
-      case 'Imputation Agent':
+      case 'Coordinator Agent':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'Workflow Manager':
+        return 'bg-pink-100 text-pink-800 border-pink-200';
+      case 'Assistant Agent':
         return 'bg-rose-100 text-rose-800 border-rose-200';
-      case 'Anomaly Detection Agent':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'Sub Agent 1 (Retriever)':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Sub Agent 2 (Analyzer)':
+        return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+      case 'Sub Agent 3 (Synthesizer)':
+        return 'bg-green-100 text-green-800 border-green-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
