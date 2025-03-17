@@ -41,7 +41,7 @@ const AgentArchitecture: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
                   <img 
-                    src="/lovable-uploads/6e09afdd-de49-43f4-b174-166c237bc4f4.png" 
+                    src="/lovable-uploads/b26da2a9-3b1f-429f-8c79-866ddb5e6eea.png" 
                     alt="Multi-Agent System Architecture" 
                     className="w-full rounded-lg border border-indigo-200 shadow-sm bg-white/90"
                   />
