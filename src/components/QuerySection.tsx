@@ -22,12 +22,14 @@ const QuerySection: React.FC<QuerySectionProps> = ({
   sectionType = 'search' 
 }) => {
   const [query, setQuery] = useState('');
-  const [showAgentInfo, setShowAgentInfo] = useState(false);
+  const [showAgentInfo, setShowAgentInfo] = useState(true); // Set to true by default
   const isMobile = useIsMobile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim() && !isLoading) {
+      // Automatically show agent info when submitting
+      setShowAgentInfo(true);
       onSubmit(query);
     }
   };

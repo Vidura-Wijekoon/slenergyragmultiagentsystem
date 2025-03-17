@@ -1,9 +1,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, X, Bot, Network, RefreshCw, CheckCircle, Clock, GitBranch, HelpingHand } from 'lucide-react';
+import { FileText, X, Bot, Network, RefreshCw, CheckCircle, Clock, GitBranch, HelpingHand, Timer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from '@/components/ui/progress';
 import LoadingIndicator from './LoadingIndicator';
 import DataVisualization, { ChartType } from './DataVisualization';
 
@@ -21,6 +22,16 @@ interface ResultsSectionProps {
   onClear: () => void;
 }
 
+interface AgentStep {
+  agent: string;
+  status: 'waiting' | 'processing' | 'completed';
+  message: string;
+  icon: string;
+  startTime?: number;
+  endTime?: number;
+  duration?: number;
+}
+
 const ResultsSection: React.FC<ResultsSectionProps> = ({
   isLoading,
   result,
@@ -29,55 +40,151 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
 }) => {
   const [showProcessFlow, setShowProcessFlow] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [processingSteps, setProcessingSteps] = useState<AgentStep[]>([]);
+  const [overallProgress, setOverallProgress] = useState(0);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [totalDuration, setTotalDuration] = useState<number | null>(null);
 
-  // Define the processing steps to simulate the agent pipeline
-  const processingSteps = [
-    { agent: 'Coordinator Agent', status: 'completed', message: 'Analyzing query and orchestrating agents', icon: 'Bot' },
-    { agent: 'Workflow Manager', status: isLoading && currentStep >= 1 ? 'processing' : (currentStep > 1 ? 'completed' : 'waiting'), message: 'Planning query processing workflow', icon: 'GitBranch' },
-    { agent: 'Assistant Agent', status: isLoading && currentStep >= 2 ? 'processing' : (currentStep > 2 ? 'completed' : 'waiting'), message: 'Providing supplementary information', icon: 'HelpingHand' },
-    { agent: 'Sub Agent (Retriever)', status: isLoading && currentStep >= 3 ? 'processing' : (currentStep > 3 ? 'completed' : 'waiting'), message: 'Retrieving information from knowledge base', icon: 'Bot' },
-    { agent: 'Sub Agent (Analyzer)', status: isLoading && currentStep >= 4 ? 'processing' : (currentStep > 4 ? 'completed' : 'waiting'), message: 'Analyzing retrieved information', icon: 'Bot' },
-    { agent: 'Sub Agent (Synthesizer)', status: isLoading && currentStep >= 5 ? 'processing' : (currentStep > 5 ? 'completed' : 'waiting'), message: 'Synthesizing information into coherent response', icon: 'Bot' },
-    { agent: 'Coordinator Agent', status: isLoading && currentStep >= 6 ? 'processing' : (currentStep > 6 ? 'completed' : 'waiting'), message: 'Generating final response', icon: 'Bot' }
-  ];
+  // Initialize the processing steps
+  useEffect(() => {
+    const steps: AgentStep[] = [
+      { agent: 'Coordinator Agent', status: 'waiting', message: 'Analyzing query and orchestrating agents', icon: 'Bot' },
+      { agent: 'Workflow Manager', status: 'waiting', message: 'Planning query processing workflow', icon: 'GitBranch' },
+      { agent: 'Assistant Agent', status: 'waiting', message: 'Providing supplementary information', icon: 'HelpingHand' },
+      { agent: 'Sub Agent (Retriever)', status: 'waiting', message: 'Retrieving information from knowledge base', icon: 'Bot' },
+      { agent: 'Sub Agent (Analyzer)', status: 'waiting', message: 'Analyzing retrieved information', icon: 'Bot' },
+      { agent: 'Sub Agent (Synthesizer)', status: 'waiting', message: 'Synthesizing information into coherent response', icon: 'Bot' },
+      { agent: 'Coordinator Agent', status: 'waiting', message: 'Generating final response', icon: 'Bot' }
+    ];
+    setProcessingSteps(steps);
+  }, []);
 
   // Use effect to advance the currentStep when isLoading is true
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    
     if (isLoading) {
       // Show process flow automatically when loading starts
       setShowProcessFlow(true);
       setCurrentStep(0);
+      setStartTime(Date.now());
+      setTotalDuration(null);
       
-      // Create a timer to advance the steps - faster now (3-4 seconds total)
-      timer = setTimeout(() => {
-        const advanceStep = () => {
-          setCurrentStep(prev => {
-            if (prev < processingSteps.length - 1) {
-              const nextStep = prev + 1;
-              // Faster step delays - each step takes ~400-500ms
-              const stepDelay = [400, 450, 400, 500, 450, 400, 400][nextStep] || 400;
-              setTimeout(advanceStep, stepDelay);
-              return nextStep;
-            }
-            return prev;
-          });
+      // Reset processing steps
+      setProcessingSteps(prev => prev.map(step => ({
+        ...step,
+        status: 'waiting',
+        startTime: undefined,
+        endTime: undefined,
+        duration: undefined
+      })));
+      
+      // Start the first step
+      setProcessingSteps(prev => {
+        const newSteps = [...prev];
+        newSteps[0] = {
+          ...newSteps[0],
+          status: 'processing',
+          startTime: Date.now()
         };
-        
-        // Start advancing steps
-        advanceStep();
-      }, 400); // Start first step faster
-    } else {
-      if (result) {
-        setCurrentStep(processingSteps.length); // Complete all steps when result is available
+        return newSteps;
+      });
+      
+      // Create a timer to advance the steps
+      let stepIndex = 0;
+      const timings = [800, 1200, 1500, 2000, 1800, 1600, 1200]; // Adjusted timings for each step
+      
+      const advanceStep = () => {
+        if (stepIndex < processingSteps.length - 1) {
+          // Complete current step
+          setProcessingSteps(prev => {
+            const newSteps = [...prev];
+            const now = Date.now();
+            const stepStartTime = newSteps[stepIndex].startTime || now;
+            const duration = now - stepStartTime;
+            
+            newSteps[stepIndex] = {
+              ...newSteps[stepIndex],
+              status: 'completed',
+              endTime: now,
+              duration: duration
+            };
+            
+            // Start next step
+            stepIndex++;
+            newSteps[stepIndex] = {
+              ...newSteps[stepIndex],
+              status: 'processing',
+              startTime: now
+            };
+            
+            return newSteps;
+          });
+          
+          setCurrentStep(stepIndex);
+          setOverallProgress(Math.round((stepIndex / (processingSteps.length - 1)) * 100));
+          
+          // Schedule next step
+          setTimeout(advanceStep, timings[stepIndex]);
+        } else {
+          // Complete final step when result is ready
+          if (result) {
+            setProcessingSteps(prev => {
+              const newSteps = [...prev];
+              const now = Date.now();
+              const stepStartTime = newSteps[stepIndex].startTime || now;
+              const duration = now - stepStartTime;
+              
+              newSteps[stepIndex] = {
+                ...newSteps[stepIndex],
+                status: 'completed',
+                endTime: now,
+                duration: duration
+              };
+              
+              return newSteps;
+            });
+            
+            setOverallProgress(100);
+            
+            // Calculate total duration
+            if (startTime) {
+              setTotalDuration(Date.now() - startTime);
+            }
+          }
+        }
+      };
+      
+      // Start the process after a small initial delay
+      setTimeout(advanceStep, timings[0]);
+    }
+  }, [isLoading, result]);
+
+  // Complete all steps when the result is ready
+  useEffect(() => {
+    if (result && !isLoading) {
+      // Complete all steps
+      setProcessingSteps(prev => 
+        prev.map((step, index) => {
+          if (step.status !== 'completed') {
+            return {
+              ...step,
+              status: 'completed',
+              endTime: Date.now(),
+              duration: index * 500 + 1000 // Assign some dummy duration
+            };
+          }
+          return step;
+        })
+      );
+      
+      setCurrentStep(processingSteps.length);
+      setOverallProgress(100);
+      
+      // Calculate total duration if not already done
+      if (startTime && !totalDuration) {
+        setTotalDuration(Date.now() - startTime);
       }
     }
-    
-    return () => {
-      if (timer) clearTimeout(timer);
-    };
-  }, [isLoading, result]);
+  }, [result, isLoading]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -124,6 +231,12 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
     }
   };
 
+  const formatDuration = (ms: number | undefined) => {
+    if (!ms) return '—';
+    const seconds = (ms / 1000).toFixed(1);
+    return `${seconds}s`;
+  };
+
   return (
     <motion.div
       className="w-full bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8"
@@ -166,43 +279,79 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
         </div>
       </div>
       
-      {showProcessFlow && (
-        <motion.div 
-          className="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
-          <p className="text-sm font-medium text-gray-700 mb-3">Multi-Agent Pipeline:</p>
-          <div className="space-y-3">
-            {processingSteps.map((step, index) => (
-              <motion.div 
-                key={index} 
-                className={`flex items-center gap-3 p-2 rounded-md border ${index === currentStep && isLoading ? 'border-blue-300 shadow-sm bg-white' : 'border-transparent'}`}
-                animate={{ 
-                  scale: index === currentStep && isLoading ? 1.02 : 1,
-                  opacity: index <= currentStep || !isLoading ? 1 : 0.5
-                }}
-                transition={{ duration: 0.2 }}
-              >
+      {/* Live Agent Demo Section - Always visible */}
+      <div 
+        className="mb-6 bg-slate-50 p-5 rounded-lg border border-slate-200"
+      >
+        <h3 className="text-sm font-semibold text-gray-800 mb-3 flex items-center gap-2">
+          <Network className="w-4 h-4 text-srigreen-700" />
+          Live Agent Demo
+        </h3>
+        
+        <p className="text-xs text-gray-600 mb-3">
+          Experience how our agents work together to process your query:
+        </p>
+        
+        {/* Overall Progress */}
+        <div className="mb-4">
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-xs font-medium text-gray-600">Processing Progress</span>
+            <span className="text-xs font-medium text-gray-600">{overallProgress}%</span>
+          </div>
+          <Progress value={overallProgress} className="h-2 bg-gray-200" />
+        </div>
+        
+        {/* Agent Steps with Timing */}
+        <div className="space-y-3 mt-4">
+          {processingSteps.map((step, index) => (
+            <motion.div 
+              key={index} 
+              className={`flex items-start justify-between gap-3 p-2 rounded-md border ${index === currentStep && isLoading ? 'border-blue-300 shadow-sm bg-white' : 'border-transparent'}`}
+              animate={{ 
+                scale: index === currentStep && isLoading ? 1.02 : 1,
+                opacity: index <= currentStep || !isLoading ? 1 : 0.5
+              }}
+              transition={{ duration: 0.2 }}
+            >
+              <div className="flex items-center gap-3">
                 {getStatusIcon(step.status)}
                 <div className={`flex items-center gap-1 px-2 py-1 rounded-md border ${getAgentColor(step.agent)}`}>
                   {getAgentIcon(step.icon)}
                   <span className="text-xs font-medium">{step.agent}</span>
                 </div>
                 <span className="text-xs text-gray-600">{step.message}</span>
-              </motion.div>
-            ))}
+              </div>
+              
+              <div className="flex items-center">
+                <Timer className="h-3.5 w-3.5 text-gray-400 mr-1" />
+                <span className="text-xs font-mono">
+                  {step.status === 'processing' ? (
+                    <span className="text-blue-500">Processing...</span>
+                  ) : (
+                    formatDuration(step.duration)
+                  )}
+                </span>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* Total Time */}
+        {totalDuration && !isLoading && (
+          <div className="mt-4 pt-3 border-t border-slate-200 flex justify-between items-center">
+            <span className="text-xs font-medium text-gray-600">Total processing time:</span>
+            <span className="text-xs font-mono font-medium text-srigreen-700">{formatDuration(totalDuration)}</span>
           </div>
-          <div className="mt-3 pt-2 border-t border-slate-200">
-            <p className="text-xs text-gray-500">
-              {isLoading 
-                ? "The query is being processed through our intelligent multi-agent system..." 
-                : "Query successfully processed through all agents in the pipeline."}
-            </p>
-          </div>
-        </motion.div>
-      )}
+        )}
+        
+        <div className="mt-3 pt-2 border-t border-slate-200">
+          <p className="text-xs text-gray-500">
+            {isLoading 
+              ? "Your query is being processed through our intelligent multi-agent system..." 
+              : result ? "Query successfully processed through all agents in the pipeline." : "Submit a query to see the agents in action."}
+          </p>
+        </div>
+      </div>
       
       <div className="min-h-[100px]">
         <AnimatePresence mode="wait">
