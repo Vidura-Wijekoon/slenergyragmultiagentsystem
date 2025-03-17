@@ -34,72 +34,54 @@ export interface AgentPool {
 // Main agent definitions
 export const agents: Agent[] = [
   {
-    id: 'master',
-    name: 'Master Agent',
+    id: 'coordinator',
+    name: 'Coordinator Agent',
     description: 'Coordinates the entire query workflow and manages sub-agents',
     color: '#F59E0B',
     icon: 'Bot',
-    role: 'Coordination and orchestration of the entire workflow'
+    role: 'The central coordinator that manages the entire query processing pipeline'
   },
   {
-    id: 'forecasting',
-    name: 'Forecasting Agent',
-    description: 'Predicts future energy trends and consumption patterns',
-    color: '#F59E0B',
-    icon: 'Database',
-    role: 'Energy forecasting and prediction',
-    promptCount: 3
-  },
-  {
-    id: 'imputation',
-    name: 'Imputation Agent',
-    description: 'Fills in missing data gaps in the energy datasets',
+    id: 'assistant',
+    name: 'Assistant Agent',
+    description: 'Assists the coordinator in handling complex queries and knowledge gaps',
     color: '#EC4899',
-    icon: 'PenTool',
-    role: 'Data gap filling and completion',
+    icon: 'HelpingHand',
+    role: 'Provides supplementary information and helps with response refinement',
     promptCount: 2
   },
   {
-    id: 'classification',
-    name: 'Classification Agent',
-    description: 'Categorizes energy data and queries by type and domain',
+    id: 'workflow',
+    name: 'Workflow Manager',
+    description: 'Plans and manages the query processing workflow',
     color: '#3B82F6',
-    icon: 'Search',
-    role: 'Energy data classification',
+    icon: 'GitBranch',
+    role: 'Determines which sub-agents to engage and in what sequence',
     promptCount: 2
-  },
-  {
-    id: 'anomaly',
-    name: 'Anomaly Detection Agent',
-    description: 'Identifies unusual patterns or outliers in energy data',
-    color: '#F59E0B',
-    icon: 'Database',
-    role: 'Anomaly and outlier detection',
-    promptCount: 3
   }
 ];
 
 // Sub-agent definitions aligned with the architecture diagram
 export const subAgents: SubAgent[] = [
   {
-    id: 'sub-agent-1',
-    name: 'Sub Agent 1',
+    id: 'retriever',
+    name: 'Retriever',
     description: 'Retrieves relevant information from the Sri Lanka energy knowledge base',
-    function: 'Retriever',
+    function: 'Information Retrieval',
     color: '#0EA5E9'
   },
   {
-    id: 'sub-agent-2',
-    name: 'Sub Agent 2',
+    id: 'analyzer',
+    name: 'Analyzer',
     description: 'Analyzes and processes the retrieved information using advanced models',
-    function: 'Analyzer',
+    function: 'Information Analysis',
     color: '#8B5CF6'
   },
   {
-    id: 'sub-agent-3',
-    name: 'Sub Agent 3',
+    id: 'synthesizer',
+    name: 'Synthesizer',
     description: 'Synthesizes the analyzed information into a coherent response',
-    function: 'Synthesizer',
+    function: 'Response Synthesis',
     color: '#10B981'
   }
 ];
@@ -107,34 +89,22 @@ export const subAgents: SubAgent[] = [
 // Agent pools that group agents by functionality
 export const agentPools: AgentPool[] = [
   {
-    id: 'master-pool',
-    name: 'Master Pool',
-    agents: [agents.find(a => a.id === 'master')!],
+    id: 'coordinator-pool',
+    name: 'Coordinator Pool',
+    agents: [agents.find(a => a.id === 'coordinator')!],
     color: '#FEF3C7'
   },
   {
-    id: 'forecasting-pool',
-    name: 'Forecasting Pool',
-    agents: [agents.find(a => a.id === 'forecasting')!],
-    color: '#FEF3C7'
-  },
-  {
-    id: 'imputation-pool',
-    name: 'Imputation Pool',
-    agents: [agents.find(a => a.id === 'imputation')!],
+    id: 'assistant-pool',
+    name: 'Assistant Pool',
+    agents: [agents.find(a => a.id === 'assistant')!],
     color: '#FCE7F3'
   },
   {
-    id: 'classification-pool',
-    name: 'Classification Pool',
-    agents: [agents.find(a => a.id === 'classification')!],
+    id: 'workflow-pool',
+    name: 'Workflow Pool',
+    agents: [agents.find(a => a.id === 'workflow')!],
     color: '#DBEAFE'
-  },
-  {
-    id: 'anomaly-pool',
-    name: 'Anomaly Pool',
-    agents: [agents.find(a => a.id === 'anomaly')!],
-    color: '#FEF3C7'
   }
 ];
 
@@ -143,44 +113,44 @@ export const queryPipeline = [
   {
     step: 1,
     name: 'Query Reception',
-    agentId: 'master',
+    agentId: 'coordinator',
     description: 'User query is received and initial analysis is performed'
   },
   {
     step: 2,
-    name: 'Classification',
-    agentId: 'classification',
-    description: 'Query is categorized based on energy domain and required data types'
+    name: 'Workflow Planning',
+    agentId: 'workflow',
+    description: 'Query processing workflow is planned and sub-agents are assigned'
   },
   {
     step: 3,
-    name: 'Data Imputation',
-    agentId: 'imputation',
-    description: 'Missing data is identified and filled using advanced imputation techniques'
+    name: 'Information Retrieval',
+    agentId: 'retriever',
+    description: 'Relevant information is retrieved from the knowledge base'
   },
   {
     step: 4,
-    name: 'Anomaly Detection',
-    agentId: 'anomaly',
-    description: 'Unusual patterns in the data are identified and flagged'
+    name: 'Information Analysis',
+    agentId: 'analyzer',
+    description: 'Retrieved information is analyzed and processed'
   },
   {
     step: 5,
-    name: 'Forecasting',
-    agentId: 'forecasting',
-    description: 'Future trends are predicted based on historical data and current patterns'
+    name: 'Supplementary Information',
+    agentId: 'assistant',
+    description: 'Additional context and information is provided to enhance the response'
   },
   {
     step: 6,
     name: 'Response Synthesis',
-    agentId: 'master',
-    description: 'Insights from all agents are compiled into a comprehensive response'
+    agentId: 'synthesizer',
+    description: 'Analyzed information is synthesized into a coherent response'
   },
   {
     step: 7,
     name: 'Final Response Generation',
-    agentId: 'master',
-    description: 'Final response is generated and returned to the user'
+    agentId: 'coordinator',
+    description: 'Final response is reviewed and delivered to the user'
   }
 ];
 

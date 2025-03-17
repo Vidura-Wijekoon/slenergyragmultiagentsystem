@@ -1,8 +1,9 @@
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { BarChart3, Send, FileText, X, BarChart, LineChart, PieChart, Network, Bot } from 'lucide-react';
+import { BarChart3, Send, FileText, X, BarChart, LineChart, PieChart, Network, Bot, GitBranch, HelpingHand } from 'lucide-react';
 import LoadingIndicator from './LoadingIndicator';
 import DataVisualization, { ChartType } from './DataVisualization';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,6 +14,8 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { agents, subAgents } from '@/config/agentConfig';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface DataSectionProps {
   onSubmit: (query: string) => void;
@@ -39,6 +42,7 @@ const DataSection: React.FC<DataSectionProps> = ({
   const [query, setQuery] = useState('');
   const [preferredChartType, setPreferredChartType] = useState<ChartType>('line');
   const [showAgentInfo, setShowAgentInfo] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,32 +64,30 @@ const DataSection: React.FC<DataSectionProps> = ({
     setQuery(example);
   };
 
-  const visualizationAgents = [
-    { 
-      name: 'Coordinator Agent', 
-      description: 'Coordinates the entire visualization process', 
-      icon: <Bot className="h-4 w-4 text-purple-600" /> 
-    },
-    { 
-      name: 'Workflow Manager', 
-      description: 'Manages the workflow and assigns tasks to sub-agents', 
-      icon: <Bot className="h-4 w-4 text-pink-600" /> 
-    },
-    { 
-      name: 'Sub Agent 1 (Retriever)', 
-      description: 'Retrieves relevant data from the knowledge base', 
-      icon: <Bot className="h-4 w-4 text-blue-500" /> 
-    },
-    { 
-      name: 'Sub Agent 2 (Analyzer)', 
-      description: 'Analyzes the data and determines optimal visualization', 
-      icon: <Bot className="h-4 w-4 text-indigo-500" /> 
-    },
-    { 
-      name: 'Sub Agent 3 (Synthesizer)', 
-      description: 'Creates the final visualization and explanation', 
-      icon: <Bot className="h-4 w-4 text-green-500" /> 
+  const getAgentIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Bot':
+        return <Bot className="h-4 w-4 text-purple-600" />;
+      case 'GitBranch':
+        return <GitBranch className="h-4 w-4 text-blue-600" />;
+      case 'HelpingHand':
+        return <HelpingHand className="h-4 w-4 text-pink-600" />;
+      default:
+        return <Bot className="h-4 w-4 text-purple-600" />;
     }
+  };
+
+  const visualizationAgents = [
+    ...agents.map(agent => ({
+      name: agent.name,
+      description: agent.description,
+      icon: getAgentIcon(agent.icon)
+    })),
+    ...subAgents.map(agent => ({
+      name: `Sub Agent (${agent.name})`,
+      description: agent.description,
+      icon: <Bot className={`h-4 w-4 ${agent.function === 'Information Retrieval' ? 'text-blue-500' : agent.function === 'Information Analysis' ? 'text-indigo-500' : 'text-green-500'}`} />
+    }))
   ];
 
   const renderVisualization = () => {
@@ -154,7 +156,7 @@ const DataSection: React.FC<DataSectionProps> = ({
                 <div key={index} className="flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-xs">
                   {agent.icon}
                   <span className="font-medium">{agent.name}</span>
-                  <span className="text-gray-500">- {agent.description}</span>
+                  {!isMobile && <span className="text-gray-500">- {agent.description}</span>}
                 </div>
               ))}
             </div>

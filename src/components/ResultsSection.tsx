@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, X, Bot, Network, RefreshCw, CheckCircle, Clock } from 'lucide-react';
+import { FileText, X, Bot, Network, RefreshCw, CheckCircle, Clock, GitBranch, HelpingHand } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoadingIndicator from './LoadingIndicator';
@@ -32,13 +32,13 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
 
   // Define the processing steps to simulate the agent pipeline
   const processingSteps = [
-    { agent: 'Coordinator Agent', status: 'completed', message: 'Analyzing query and coordinating sub-agents' },
-    { agent: 'Workflow Manager', status: isLoading && currentStep >= 1 ? 'processing' : (currentStep > 1 ? 'completed' : 'waiting'), message: 'Managing workflow and assigning tasks' },
-    { agent: 'Assistant Agent', status: isLoading && currentStep >= 2 ? 'processing' : (currentStep > 2 ? 'completed' : 'waiting'), message: 'Supporting the coordinator with complex processing' },
-    { agent: 'Sub Agent 1 (Retriever)', status: isLoading && currentStep >= 3 ? 'processing' : (currentStep > 3 ? 'completed' : 'waiting'), message: 'Retrieving information from knowledge base' },
-    { agent: 'Sub Agent 2 (Analyzer)', status: isLoading && currentStep >= 4 ? 'processing' : (currentStep > 4 ? 'completed' : 'waiting'), message: 'Analyzing retrieved information' },
-    { agent: 'Sub Agent 3 (Synthesizer)', status: isLoading && currentStep >= 5 ? 'processing' : (currentStep > 5 ? 'completed' : 'waiting'), message: 'Synthesizing information into coherent response' },
-    { agent: 'Coordinator Agent', status: isLoading && currentStep >= 6 ? 'processing' : (currentStep > 6 ? 'completed' : 'waiting'), message: 'Generating final response' }
+    { agent: 'Coordinator Agent', status: 'completed', message: 'Analyzing query and orchestrating agents', icon: 'Bot' },
+    { agent: 'Workflow Manager', status: isLoading && currentStep >= 1 ? 'processing' : (currentStep > 1 ? 'completed' : 'waiting'), message: 'Planning query processing workflow', icon: 'GitBranch' },
+    { agent: 'Assistant Agent', status: isLoading && currentStep >= 2 ? 'processing' : (currentStep > 2 ? 'completed' : 'waiting'), message: 'Providing supplementary information', icon: 'HelpingHand' },
+    { agent: 'Sub Agent (Retriever)', status: isLoading && currentStep >= 3 ? 'processing' : (currentStep > 3 ? 'completed' : 'waiting'), message: 'Retrieving information from knowledge base', icon: 'Bot' },
+    { agent: 'Sub Agent (Analyzer)', status: isLoading && currentStep >= 4 ? 'processing' : (currentStep > 4 ? 'completed' : 'waiting'), message: 'Analyzing retrieved information', icon: 'Bot' },
+    { agent: 'Sub Agent (Synthesizer)', status: isLoading && currentStep >= 5 ? 'processing' : (currentStep > 5 ? 'completed' : 'waiting'), message: 'Synthesizing information into coherent response', icon: 'Bot' },
+    { agent: 'Coordinator Agent', status: isLoading && currentStep >= 6 ? 'processing' : (currentStep > 6 ? 'completed' : 'waiting'), message: 'Generating final response', icon: 'Bot' }
   ];
 
   // Use effect to advance the currentStep when isLoading is true
@@ -92,19 +92,32 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
     }
   };
 
+  const getAgentIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Bot':
+        return <Bot className="h-3.5 w-3.5" />;
+      case 'GitBranch':
+        return <GitBranch className="h-3.5 w-3.5" />;
+      case 'HelpingHand':
+        return <HelpingHand className="h-3.5 w-3.5" />;
+      default:
+        return <Bot className="h-3.5 w-3.5" />;
+    }
+  };
+
   const getAgentColor = (agent: string) => {
     switch (agent) {
       case 'Coordinator Agent':
         return 'bg-purple-100 text-purple-800 border-purple-200';
       case 'Workflow Manager':
-        return 'bg-pink-100 text-pink-800 border-pink-200';
-      case 'Assistant Agent':
-        return 'bg-rose-100 text-rose-800 border-rose-200';
-      case 'Sub Agent 1 (Retriever)':
         return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'Sub Agent 2 (Analyzer)':
+      case 'Assistant Agent':
+        return 'bg-pink-100 text-pink-800 border-pink-200';
+      case 'Sub Agent (Retriever)':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Sub Agent (Analyzer)':
         return 'bg-indigo-100 text-indigo-800 border-indigo-200';
-      case 'Sub Agent 3 (Synthesizer)':
+      case 'Sub Agent (Synthesizer)':
         return 'bg-green-100 text-green-800 border-green-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
@@ -174,7 +187,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
               >
                 {getStatusIcon(step.status)}
                 <div className={`flex items-center gap-1 px-2 py-1 rounded-md border ${getAgentColor(step.agent)}`}>
-                  <Bot className="h-3.5 w-3.5" />
+                  {getAgentIcon(step.icon)}
                   <span className="text-xs font-medium">{step.agent}</span>
                 </div>
                 <span className="text-xs text-gray-600">{step.message}</span>
