@@ -206,16 +206,30 @@ const Index = () => {
             ))}
           </motion.div>
           
-          {renderActiveSection()}
-          
-          {/* Add the new Energy Metrics Section */}
-          <div className="mt-12 bg-white rounded-xl shadow-sm overflow-hidden">
-            <EnergyMetricsSection />
+          {/* Main interactive section */}
+          <div className="mb-16">
+            {renderActiveSection()}
           </div>
           
-          {/* Add the World Energy Map */}
-          <div className="mt-12 bg-white rounded-xl shadow-sm overflow-hidden">
-            <WorldEnergyMap />
+          {/* Enhanced visualization sections with better spacing and structure */}
+          <div className="space-y-16">
+            {/* Energy Metrics Section */}
+            <section className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+              <div className="p-6 border-b border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-800">Energy Metrics Dashboard</h2>
+                <p className="text-sm text-gray-600 mt-1">Key performance indicators for Sri Lanka's energy sector</p>
+              </div>
+              <EnergyMetricsSection />
+            </section>
+            
+            {/* World Energy Map Section */}
+            <section className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200">
+              <div className="p-6 border-b border-gray-100">
+                <h2 className="text-xl font-semibold text-gray-800">Global Energy Perspective</h2>
+                <p className="text-sm text-gray-600 mt-1">Compare Sri Lanka's energy profile with global statistics</p>
+              </div>
+              <WorldEnergyMap />
+            </section>
           </div>
         </div>
       </main>
