@@ -45,9 +45,9 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
     scene.add(sunLight);
 
     // Earth geometry
-    const earthGeometry = new THREE.SphereGeometry(2, 32, 32);
+    const earthGeometry = new THREE.SphereGeometry(2, 64, 64);
     
-    // Earth texture
+    // Earth texture - using NASA's Blue Marble image
     const textureLoader = new THREE.TextureLoader();
     const earthMaterial = new THREE.MeshPhongMaterial({
       map: textureLoader.load('/earth-texture.jpg', undefined, undefined, (err) => {
@@ -83,6 +83,38 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
     const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
     scene.add(atmosphere);
 
+    // Add the Moon
+    const moonGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+    const moonMaterial = new THREE.MeshPhongMaterial({
+      map: textureLoader.load('https://space-assets-1.ams3.cdn.digitaloceanspaces.com/moon_texture.jpg', undefined, undefined, (err) => {
+        if (err) {
+          moonMesh.material = new THREE.MeshPhongMaterial({
+            color: 0xaaaaaa,
+            emissive: 0x222222,
+          });
+        }
+      }),
+      bumpMap: textureLoader.load('https://space-assets-1.ams3.cdn.digitaloceanspaces.com/moon_bump.jpg', undefined, undefined, () => {}),
+      bumpScale: 0.01,
+    });
+    
+    const moonMesh = new THREE.Mesh(moonGeometry, moonMaterial);
+    // Position moon far away from Earth (realistic distance would be too far for visualization)
+    moonMesh.position.set(8, 0, 0);
+    scene.add(moonMesh);
+    
+    // Create moon orbit path
+    const moonOrbitGeometry = new THREE.RingGeometry(8, 8.05, 64);
+    const moonOrbitMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.1,
+      side: THREE.DoubleSide
+    });
+    const moonOrbit = new THREE.Mesh(moonOrbitGeometry, moonOrbitMaterial);
+    moonOrbit.rotation.x = Math.PI / 2;
+    scene.add(moonOrbit);
+
     // Energy flow visualization (incoming solar)
     const solarEnergyGeometry = new THREE.ConeGeometry(0.8, 2, 16);
     const solarEnergyMaterial = new THREE.MeshBasicMaterial({ 
@@ -117,6 +149,27 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
     energyOut.rotateX(Math.PI);
     scene.add(energyOut);
 
+    // Add stars to the background
+    const starsGeometry = new THREE.BufferGeometry();
+    const starsCount = 2000;
+    const positions = new Float32Array(starsCount * 3);
+    
+    for (let i = 0; i < starsCount; i++) {
+      const i3 = i * 3;
+      positions[i3] = (Math.random() - 0.5) * 100;
+      positions[i3 + 1] = (Math.random() - 0.5) * 100;
+      positions[i3 + 2] = (Math.random() - 0.5) * 100;
+    }
+    
+    starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const starsMaterial = new THREE.PointsMaterial({
+      color: 0xffffff,
+      size: 0.1,
+      sizeAttenuation: true
+    });
+    const stars = new THREE.Points(starsGeometry, starsMaterial);
+    scene.add(stars);
+
     // Position camera
     camera.position.z = 7;
 
@@ -126,15 +179,22 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
       sphere.rotation.y += 0.002;
       atmosphere.rotation.y += 0.0015;
       
+      // Moon orbit
+      const time = Date.now() * 0.0001;
+      moonMesh.position.x = Math.cos(time * 0.3) * 8;
+      moonMesh.position.z = Math.sin(time * 0.3) * 8;
+      // Moon rotation (tidally locked to Earth)
+      moonMesh.rotation.y += 0.001;
+      
       // Pulse energy visualizations
       const pulse = Math.sin(Date.now() * 0.002) * 0.2 + 0.8;
       solarEnergy.scale.set(pulse, pulse, pulse);
       energyOut.scale.set(pulse, pulse, pulse);
       
       // Orbit human energy indicator
-      const time = Date.now() * 0.001;
-      humanEnergy.position.x = Math.cos(time) * 2.3;
-      humanEnergy.position.z = Math.sin(time) * 2.3;
+      const humanTime = Date.now() * 0.001;
+      humanEnergy.position.x = Math.cos(humanTime) * 2.3;
+      humanEnergy.position.z = Math.sin(humanTime) * 2.3;
       
       renderer.render(scene, camera);
       animationFrameId.current = requestAnimationFrame(animate);
@@ -142,6 +202,48 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
 
     // Start animation
     animate();
+
+    // Add interactive controls to rotate the scene on mouse drag
+    let isDragging = false;
+    let previousMousePosition = { x: 0, y: 0 };
+    
+    const onMouseDown = (e: MouseEvent) => {
+      isDragging = true;
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    };
+    
+    const onMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      
+      const deltaMove = {
+        x: e.clientX - previousMousePosition.x,
+        y: e.clientY - previousMousePosition.y
+      };
+      
+      if (mountRef.current) {
+        const deltaRotationQuaternion = new THREE.Quaternion()
+          .setFromEuler(
+            new THREE.Euler(
+              deltaMove.y * 0.005,
+              deltaMove.x * 0.005,
+              0,
+              'XYZ'
+            )
+          );
+        
+        scene.quaternion.multiplyQuaternions(deltaRotationQuaternion, scene.quaternion);
+      }
+      
+      previousMousePosition = { x: e.clientX, y: e.clientY };
+    };
+    
+    const onMouseUp = () => {
+      isDragging = false;
+    };
+    
+    mountRef.current.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
 
     // Handle window resize
     const handleResize = () => {
@@ -157,6 +259,12 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
     // Cleanup function
     return () => {
       window.removeEventListener('resize', handleResize);
+      if (mountRef.current) {
+        mountRef.current.removeEventListener('mousedown', onMouseDown);
+      }
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      
       if (animationFrameId.current !== null) {
         cancelAnimationFrame(animationFrameId.current);
       }
@@ -169,12 +277,18 @@ const EarthAnimation: React.FC<EarthAnimationProps> = ({ className = "" }) => {
       earthGeometry.dispose();
       atmosphereMaterial.dispose();
       atmosphereGeometry.dispose();
+      moonMaterial.dispose();
+      moonGeometry.dispose();
+      moonOrbitMaterial.dispose();
+      moonOrbitGeometry.dispose();
       solarEnergyMaterial.dispose();
       solarEnergyGeometry.dispose();
       humanEnergyMaterial.dispose();
       humanEnergyGeometry.dispose();
       energyOutMaterial.dispose();
       energyOutGeometry.dispose();
+      starsGeometry.dispose();
+      starsMaterial.dispose();
     };
   }, []);
 
