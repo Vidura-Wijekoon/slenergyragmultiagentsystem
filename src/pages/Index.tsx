@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
@@ -158,11 +159,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-50 to-purple-50">
       <Header />
       
-      <main className="flex-1 py-8 px-4 md:px-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 py-8 px-4 md:px-8 flex flex-col">
+        <div className="max-w-7xl mx-auto w-full">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
@@ -186,7 +187,7 @@ const Index = () => {
           </div>
           
           <motion.div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ staggerChildren: 0.1, delayChildren: 0.3 }}
@@ -203,11 +204,13 @@ const Index = () => {
             ))}
           </motion.div>
           
-          {renderActiveSection()}
+          <div className="space-y-6 mb-auto">
+            {renderActiveSection()}
+          </div>
         </div>
       </main>
       
-      <footer className="py-6 bg-gradient-to-r from-indigo-900 to-purple-900 text-white mt-12">
+      <footer className="py-6 bg-gradient-to-r from-indigo-900 to-purple-900 text-white mt-4">
         <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
           <p className="text-sm">ViduraAI @SriLanka, All rights reserved</p>
         </div>

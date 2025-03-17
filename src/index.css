@@ -105,4 +105,26 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-srigreen-700 to-srigreen-500;
   }
+
+  /* Main content container */
+  .content-container {
+    @apply flex flex-col flex-1;
+  }
+  
+  /* Background gradients */
+  .bg-soft-gradient {
+    @apply bg-gradient-to-br from-indigo-50 to-purple-50;
+  }
+  
+  .bg-soft-blue {
+    @apply bg-gradient-to-br from-blue-50 to-indigo-50;
+  }
+  
+  .bg-soft-green {
+    @apply bg-gradient-to-br from-green-50 to-teal-50;
+  }
+  
+  .bg-soft-purple {
+    @apply bg-gradient-to-br from-purple-50 to-pink-50;
+  }
 }
