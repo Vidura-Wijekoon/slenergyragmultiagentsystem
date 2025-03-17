@@ -6,7 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { HelpCircle, Send, Bot, Network } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+import { agents, subAgents } from '@/config/agentConfig';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface QuerySectionProps {
   onSubmit: (query: string) => void;
@@ -21,6 +23,7 @@ const QuerySection: React.FC<QuerySectionProps> = ({
 }) => {
   const [query, setQuery] = useState('');
   const [showAgentInfo, setShowAgentInfo] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,39 +69,39 @@ const QuerySection: React.FC<QuerySectionProps> = ({
     setQuery(example);
   };
 
-  // Define the agents used in the pipeline with colors
-  const agentTypes = [
-    { 
-      name: 'Master Agent', 
-      description: 'Coordinates the workflow and delegates tasks to specialized sub-agents',
-      color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      icon: <Bot className="h-4 w-4 text-yellow-700" /> 
-    },
-    { 
-      name: 'Forecasting Agent', 
-      description: 'Analyzes time-series data and predicts future trends in energy production and consumption',
-      color: 'bg-amber-100 text-amber-800 border-amber-200', 
-      icon: <Bot className="h-4 w-4 text-amber-700" /> 
-    },
-    { 
-      name: 'Imputation Agent', 
-      description: 'Fills in missing data in energy datasets to provide complete analysis',
-      color: 'bg-rose-100 text-rose-800 border-rose-200', 
-      icon: <Bot className="h-4 w-4 text-rose-700" /> 
-    },
-    { 
-      name: 'Classification Agent', 
-      description: 'Categorizes and organizes energy policy data and research',
-      color: 'bg-blue-100 text-blue-800 border-blue-200', 
-      icon: <Bot className="h-4 w-4 text-blue-700" /> 
-    },
-    { 
-      name: 'Anomaly Detection Agent', 
-      description: 'Identifies unusual patterns in energy data that may require attention',
-      color: 'bg-orange-100 text-orange-800 border-orange-200', 
-      icon: <Bot className="h-4 w-4 text-orange-700" /> 
+  // Function to get the icon component based on agent's icon name
+  const getAgentIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Bot':
+        return <Bot className="h-4 w-4 text-yellow-700" />;
+      case 'GitBranch':
+        return <Bot className="h-4 w-4 text-blue-700" />;
+      case 'HelpingHand':
+        return <Bot className="h-4 w-4 text-pink-700" />;
+      default:
+        return <Bot className="h-4 w-4" />;
     }
-  ];
+  };
+
+  // Get agent color based on agent's color property
+  const getAgentColor = (color: string) => {
+    switch (color) {
+      case '#F59E0B':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case '#3B82F6':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case '#EC4899':
+        return 'bg-pink-100 text-pink-800 border-pink-200';
+      case '#0EA5E9':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case '#8B5CF6':
+        return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+      case '#10B981':
+        return 'bg-green-100 text-green-800 border-green-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
 
   return (
     <motion.div 
@@ -139,16 +142,36 @@ const QuerySection: React.FC<QuerySectionProps> = ({
           >
             <p className="text-sm font-medium text-gray-700 mb-3">Multi-Agent Pipeline:</p>
             <div className="flex flex-wrap gap-2 mb-3">
-              {agentTypes.map((agent, index) => (
+              {agents.map((agent, index) => (
                 <motion.div
                   key={index}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border ${agent.color}`}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border ${getAgentColor(agent.color)}`}
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: index * 0.1, duration: 0.2 }}
                 >
-                  {agent.icon}
+                  {getAgentIcon(agent.icon)}
                   <span className="text-xs font-medium">{agent.name}</span>
+                  {!isMobile && (
+                    <span className="text-xs text-gray-500 hidden lg:inline">- {agent.description}</span>
+                  )}
+                </motion.div>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {subAgents.map((agent, index) => (
+                <motion.div
+                  key={index}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border ${getAgentColor(agent.color)}`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: (index + agents.length) * 0.1, duration: 0.2 }}
+                >
+                  <Bot className="h-4 w-4" />
+                  <span className="text-xs font-medium">Sub Agent ({agent.name})</span>
+                  {!isMobile && (
+                    <span className="text-xs text-gray-500 hidden lg:inline">- {agent.description}</span>
+                  )}
                 </motion.div>
               ))}
             </div>
