@@ -207,13 +207,13 @@ const Index = () => {
             ))}
           </motion.div>
           
-          <div className="space-y-6 mb-auto">
+          <div className="space-y-6">
             {renderActiveSection()}
           </div>
         </div>
       </main>
       
-      <footer className="py-6 bg-gradient-to-r from-indigo-900 to-purple-900 text-white mt-4">
+      <footer className="py-6 bg-gradient-to-r from-indigo-900 to-purple-900 text-white">
         <div className="max-w-7xl mx-auto px-4 md:px-8 text-center">
           <p className="text-sm">ViduraAI @SriLanka, All rights reserved</p>
         </div>
