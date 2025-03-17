@@ -61,25 +61,25 @@ export const agents: Agent[] = [
   }
 ];
 
-// Sub-agent definitions
+// Sub-agent definitions aligned with the architecture diagram
 export const subAgents: SubAgent[] = [
   {
     id: 'sub-agent-1',
-    name: 'Sub Agent 1 (Retriever)',
+    name: 'Sub Agent 1',
     description: 'Retrieves relevant information from the Sri Lanka energy knowledge base',
     function: 'Retriever',
     color: '#0EA5E9'
   },
   {
     id: 'sub-agent-2',
-    name: 'Sub Agent 2 (Analyzer)',
+    name: 'Sub Agent 2',
     description: 'Analyzes and processes the retrieved information using advanced models',
     function: 'Analyzer',
     color: '#8B5CF6'
   },
   {
     id: 'sub-agent-3',
-    name: 'Sub Agent 3 (Synthesizer)',
+    name: 'Sub Agent 3',
     description: 'Synthesizes the analyzed information into a coherent response',
     function: 'Synthesizer',
     color: '#10B981'

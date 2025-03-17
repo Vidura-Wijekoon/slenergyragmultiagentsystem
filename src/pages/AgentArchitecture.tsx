@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
@@ -41,65 +40,10 @@ const AgentArchitecture: React.FC = () => {
                   transition={{ delay: 0.2, duration: 0.5 }}
                 >
                   <img 
-                    src="/lovable-uploads/67a8a3d5-7217-428b-b688-5ebf8cb6aef2.png" 
+                    src="/lovable-uploads/a80309f4-4315-4192-b207-6c1f4d402446.png" 
                     alt="Multi-Agent System Architecture" 
                     className="w-full rounded-lg border border-indigo-200 shadow-sm bg-white/90"
                   />
-                  
-                  {/* Interactive Overlay Elements */}
-                  <motion.div 
-                    className="absolute top-[15%] left-[22%] bg-white/80 text-sm px-3 py-1 rounded-full border border-indigo-200 backdrop-blur-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8, duration: 0.3 }}
-                  >
-                    Query
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="absolute top-[15%] right-[24%] bg-white/80 text-sm px-3 py-1 rounded-full border border-indigo-200 backdrop-blur-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.6, duration: 0.3 }}
-                  >
-                    Response
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="absolute top-[27%] left-[22%] bg-white/80 text-sm px-3 py-1 rounded-full border border-blue-200 backdrop-blur-sm flex items-center gap-1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.0, duration: 0.3 }}
-                  >
-                    <Cpu className="w-3 h-3" /> Agentic RAGs
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="absolute top-[42%] left-[18%] bg-white/80 text-sm px-3 py-1 rounded-full border border-blue-200 backdrop-blur-sm flex items-center gap-1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2, duration: 0.3 }}
-                  >
-                    <Bot className="w-3 h-3" /> Sub Agent 1
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="absolute bottom-[32%] left-[15%] bg-white/80 text-sm px-3 py-1 rounded-full border border-blue-200 backdrop-blur-sm flex items-center gap-1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.4, duration: 0.3 }}
-                  >
-                    <Search className="w-3 h-3" /> Retriever
-                  </motion.div>
-                  
-                  <motion.div 
-                    className="absolute right-[18%] bottom-[25%] bg-white/80 text-sm px-3 py-1 rounded-full border border-pink-200 backdrop-blur-sm flex items-center gap-1"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.8, duration: 0.3 }}
-                  >
-                    <GitBranch className="w-3 h-3" /> Workflow Manager
-                  </motion.div>
                 </motion.div>
               </div>
               
