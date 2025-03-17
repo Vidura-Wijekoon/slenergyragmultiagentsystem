@@ -34,30 +34,48 @@ export interface AgentPool {
 // Main agent definitions
 export const agents: Agent[] = [
   {
-    id: 'coordinator',
-    name: 'Coordinator Agent',
+    id: 'master',
+    name: 'Master Agent',
     description: 'Coordinates the entire query workflow and manages sub-agents',
-    color: '#8B5CF6',
+    color: '#F59E0B',
     icon: 'Bot',
     role: 'Coordination and orchestration of the entire workflow'
   },
   {
-    id: 'workflow',
-    name: 'Workflow Manager',
-    description: 'Manages the workflow and assigns tasks to sub-agents',
-    color: '#EC4899',
-    icon: 'GitBranch',
-    role: 'Workflow management and task assignment',
-    promptCount: 5
+    id: 'forecasting',
+    name: 'Forecasting Agent',
+    description: 'Predicts future energy trends and consumption patterns',
+    color: '#F59E0B',
+    icon: 'Database',
+    role: 'Energy forecasting and prediction',
+    promptCount: 3
   },
   {
-    id: 'assistant',
-    name: 'Assistant Agent',
-    description: 'Assists the coordinator agent in processing complex queries',
-    color: '#F472B6',
-    icon: 'HelpingHand',
-    role: 'Assistant to the coordinator',
-    promptCount: 4
+    id: 'imputation',
+    name: 'Imputation Agent',
+    description: 'Fills in missing data gaps in the energy datasets',
+    color: '#EC4899',
+    icon: 'PenTool',
+    role: 'Data gap filling and completion',
+    promptCount: 2
+  },
+  {
+    id: 'classification',
+    name: 'Classification Agent',
+    description: 'Categorizes energy data and queries by type and domain',
+    color: '#3B82F6',
+    icon: 'Search',
+    role: 'Energy data classification',
+    promptCount: 2
+  },
+  {
+    id: 'anomaly',
+    name: 'Anomaly Detection Agent',
+    description: 'Identifies unusual patterns or outliers in energy data',
+    color: '#F59E0B',
+    icon: 'Database',
+    role: 'Anomaly and outlier detection',
+    promptCount: 3
   }
 ];
 
@@ -89,22 +107,34 @@ export const subAgents: SubAgent[] = [
 // Agent pools that group agents by functionality
 export const agentPools: AgentPool[] = [
   {
-    id: 'coordinator-pool',
-    name: 'Coordinator Pool',
-    agents: [agents.find(a => a.id === 'coordinator')!],
-    color: '#EDE9FE'
+    id: 'master-pool',
+    name: 'Master Pool',
+    agents: [agents.find(a => a.id === 'master')!],
+    color: '#FEF3C7'
   },
   {
-    id: 'workflow-pool',
-    name: 'Workflow Pool',
-    agents: [agents.find(a => a.id === 'workflow')!],
+    id: 'forecasting-pool',
+    name: 'Forecasting Pool',
+    agents: [agents.find(a => a.id === 'forecasting')!],
+    color: '#FEF3C7'
+  },
+  {
+    id: 'imputation-pool',
+    name: 'Imputation Pool',
+    agents: [agents.find(a => a.id === 'imputation')!],
     color: '#FCE7F3'
   },
   {
-    id: 'assistant-pool',
-    name: 'Assistant Pool',
-    agents: [agents.find(a => a.id === 'assistant')!],
-    color: '#FBCFE8'
+    id: 'classification-pool',
+    name: 'Classification Pool',
+    agents: [agents.find(a => a.id === 'classification')!],
+    color: '#DBEAFE'
+  },
+  {
+    id: 'anomaly-pool',
+    name: 'Anomaly Pool',
+    agents: [agents.find(a => a.id === 'anomaly')!],
+    color: '#FEF3C7'
   }
 ];
 
@@ -113,43 +143,43 @@ export const queryPipeline = [
   {
     step: 1,
     name: 'Query Reception',
-    agentId: 'coordinator',
+    agentId: 'master',
     description: 'User query is received and initial analysis is performed'
   },
   {
     step: 2,
-    name: 'Agentic RAGs Processing',
-    agentId: 'coordinator',
-    description: 'Coordinator agent processes query through Agentic RAGs'
+    name: 'Classification',
+    agentId: 'classification',
+    description: 'Query is categorized based on energy domain and required data types'
   },
   {
     step: 3,
-    name: 'Sub-Agent Distribution',
-    agentId: 'workflow',
-    description: 'Workflow manager distributes tasks to specialized sub-agents'
+    name: 'Data Imputation',
+    agentId: 'imputation',
+    description: 'Missing data is identified and filled using advanced imputation techniques'
   },
   {
     step: 4,
-    name: 'Information Retrieval',
-    agentId: 'sub-agent-1',
-    description: 'Sub Agent 1 retrieves relevant data from energy knowledge base'
+    name: 'Anomaly Detection',
+    agentId: 'anomaly',
+    description: 'Unusual patterns in the data are identified and flagged'
   },
   {
     step: 5,
-    name: 'Data Analysis',
-    agentId: 'sub-agent-2',
-    description: 'Sub Agent 2 processes the retrieved information and applies analysis'
+    name: 'Forecasting',
+    agentId: 'forecasting',
+    description: 'Future trends are predicted based on historical data and current patterns'
   },
   {
     step: 6,
     name: 'Response Synthesis',
-    agentId: 'sub-agent-3',
-    description: 'Sub Agent 3 creates a coherent response with visualizations if needed'
+    agentId: 'master',
+    description: 'Insights from all agents are compiled into a comprehensive response'
   },
   {
     step: 7,
     name: 'Final Response Generation',
-    agentId: 'coordinator',
+    agentId: 'master',
     description: 'Final response is generated and returned to the user'
   }
 ];
