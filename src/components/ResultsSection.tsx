@@ -1,7 +1,7 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, X, Bot, Network, RefreshCw } from 'lucide-react';
+import { FileText, X, Bot, Network, RefreshCw, CheckCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoadingIndicator from './LoadingIndicator';
@@ -28,27 +28,82 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
   onClear
 }) => {
   const [showProcessFlow, setShowProcessFlow] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
 
   // Define the processing steps to simulate the agent pipeline
   const processingSteps = [
     { agent: 'Master Agent', status: 'completed', message: 'Analyzing query and coordinating sub-agents' },
-    { agent: 'Classification Agent', status: 'completed', message: 'Categorizing query and relevant data sources' },
-    { agent: 'Forecasting Agent', status: isLoading ? 'processing' : 'completed', message: 'Analyzing historical data trends' },
-    { agent: 'Imputation Agent', status: isLoading ? 'waiting' : 'completed', message: 'Filling gaps in data if needed' },
-    { agent: 'Anomaly Detection Agent', status: isLoading ? 'waiting' : 'completed', message: 'Validating data consistency' },
-    { agent: 'Master Agent', status: isLoading ? 'waiting' : 'completed', message: 'Compiling final response' }
+    { agent: 'Classification Agent', status: isLoading && currentStep >= 1 ? 'processing' : (currentStep > 1 ? 'completed' : 'waiting'), message: 'Categorizing query and relevant data sources' },
+    { agent: 'Forecasting Agent', status: isLoading && currentStep >= 2 ? 'processing' : (currentStep > 2 ? 'completed' : 'waiting'), message: 'Analyzing historical data trends' },
+    { agent: 'Imputation Agent', status: isLoading && currentStep >= 3 ? 'processing' : (currentStep > 3 ? 'completed' : 'waiting'), message: 'Filling gaps in data if needed' },
+    { agent: 'Anomaly Detection Agent', status: isLoading && currentStep >= 4 ? 'processing' : (currentStep > 4 ? 'completed' : 'waiting'), message: 'Validating data consistency' },
+    { agent: 'Master Agent', status: isLoading && currentStep >= 5 ? 'processing' : (currentStep > 5 ? 'completed' : 'waiting'), message: 'Compiling final response' }
   ];
+
+  // Use effect to advance the currentStep when isLoading is true
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    
+    if (isLoading) {
+      // Show process flow automatically when loading starts
+      setShowProcessFlow(true);
+      setCurrentStep(0);
+      
+      // Create a timer to advance the steps
+      timer = setTimeout(() => {
+        const advanceStep = () => {
+          setCurrentStep(prev => {
+            if (prev < processingSteps.length - 1) {
+              const nextStep = prev + 1;
+              const stepDelay = [700, 900, 800, 600, 1000, 1200][nextStep] || 800;
+              setTimeout(advanceStep, stepDelay);
+              return nextStep;
+            }
+            return prev;
+          });
+        };
+        
+        // Start advancing steps
+        advanceStep();
+      }, 800);
+    } else {
+      if (result) {
+        setCurrentStep(processingSteps.length); // Complete all steps when result is available
+      }
+    }
+    
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [isLoading, result]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'completed':
-        return <div className="h-4 w-4 rounded-full bg-green-500"></div>;
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case 'processing':
         return <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />;
       case 'waiting':
-        return <div className="h-4 w-4 rounded-full bg-gray-300"></div>;
+        return <Clock className="h-4 w-4 text-gray-300" />;
       default:
         return <div className="h-4 w-4 rounded-full bg-gray-300"></div>;
+    }
+  };
+
+  const getAgentColor = (agent: string) => {
+    switch (agent) {
+      case 'Master Agent':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Classification Agent':
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Forecasting Agent':
+        return 'bg-amber-100 text-amber-800 border-amber-200';
+      case 'Imputation Agent':
+        return 'bg-rose-100 text-rose-800 border-rose-200';
+      case 'Anomaly Detection Agent':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
@@ -77,7 +132,7 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
               className="text-gray-500 hover:text-gray-700 focus:ring-0 flex items-center gap-1"
             >
               <Network className="w-4 h-4" />
-              <span className="text-xs">{showProcessFlow ? 'Hide Process' : 'Show Process'}</span>
+              <span className="text-xs">{showProcessFlow ? 'Hide Agents' : 'View Agents'}</span>
             </Button>
           )}
           
@@ -96,23 +151,38 @@ const ResultsSection: React.FC<ResultsSectionProps> = ({
       
       {showProcessFlow && (
         <motion.div 
-          className="mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200"
+          className="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           exit={{ opacity: 0, height: 0 }}
         >
-          <p className="text-sm font-medium text-gray-700 mb-3">Multi-Agent Processing Flow:</p>
-          <div className="space-y-2">
+          <p className="text-sm font-medium text-gray-700 mb-3">Multi-Agent Pipeline:</p>
+          <div className="space-y-3">
             {processingSteps.map((step, index) => (
-              <div key={index} className="flex items-center gap-2">
+              <motion.div 
+                key={index} 
+                className={`flex items-center gap-3 p-2 rounded-md border ${index === currentStep && isLoading ? 'border-blue-300 shadow-sm bg-white' : 'border-transparent'}`}
+                animate={{ 
+                  scale: index === currentStep && isLoading ? 1.02 : 1,
+                  opacity: index <= currentStep || !isLoading ? 1 : 0.5
+                }}
+                transition={{ duration: 0.2 }}
+              >
                 {getStatusIcon(step.status)}
-                <div className="flex items-center gap-1">
-                  <Bot className="h-3.5 w-3.5 text-gray-600" />
-                  <span className="text-xs font-medium">{step.agent}:</span>
+                <div className={`flex items-center gap-1 px-2 py-1 rounded-md border ${getAgentColor(step.agent)}`}>
+                  <Bot className="h-3.5 w-3.5" />
+                  <span className="text-xs font-medium">{step.agent}</span>
                 </div>
                 <span className="text-xs text-gray-600">{step.message}</span>
-              </div>
+              </motion.div>
             ))}
+          </div>
+          <div className="mt-3 pt-2 border-t border-slate-200">
+            <p className="text-xs text-gray-500">
+              {isLoading 
+                ? "The query is being processed through our intelligent multi-agent system..." 
+                : "Query successfully processed through all agents in the pipeline."}
+            </p>
           </div>
         </motion.div>
       )}

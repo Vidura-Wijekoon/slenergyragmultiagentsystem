@@ -34,11 +34,73 @@ const AgentArchitecture: React.FC = () => {
               </p>
               
               <div className="flex justify-center mb-8">
-                <img 
-                  src="/lovable-uploads/300ff467-e9a8-4552-871c-5fe8b898814c.png" 
-                  alt="Multi-Agent System Architecture" 
-                  className="max-w-full md:max-w-2xl rounded-lg border border-indigo-200 shadow-sm"
-                />
+                <motion.div 
+                  className="relative max-w-3xl w-full rounded-xl overflow-hidden shadow-md"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
+                  <img 
+                    src="/lovable-uploads/67a8a3d5-7217-428b-b688-5ebf8cb6aef2.png" 
+                    alt="Multi-Agent System Architecture" 
+                    className="w-full rounded-lg border border-indigo-200 shadow-sm bg-white/90"
+                  />
+                  
+                  {/* Interactive Overlay Elements */}
+                  <motion.div 
+                    className="absolute top-[15%] left-[22%] bg-white/80 text-sm px-3 py-1 rounded-full border border-indigo-200 backdrop-blur-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.3 }}
+                  >
+                    Query
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute top-[15%] right-[24%] bg-white/80 text-sm px-3 py-1 rounded-full border border-indigo-200 backdrop-blur-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.6, duration: 0.3 }}
+                  >
+                    Response
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute top-[27%] left-[22%] bg-white/80 text-sm px-3 py-1 rounded-full border border-blue-200 backdrop-blur-sm flex items-center gap-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.0, duration: 0.3 }}
+                  >
+                    <Cpu className="w-3 h-3" /> Agentic RAGs
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute top-[42%] left-[18%] bg-white/80 text-sm px-3 py-1 rounded-full border border-blue-200 backdrop-blur-sm flex items-center gap-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.2, duration: 0.3 }}
+                  >
+                    <Bot className="w-3 h-3" /> Sub Agent 1
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute bottom-[32%] left-[15%] bg-white/80 text-sm px-3 py-1 rounded-full border border-blue-200 backdrop-blur-sm flex items-center gap-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.4, duration: 0.3 }}
+                  >
+                    <Search className="w-3 h-3" /> Retriever
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute right-[18%] bottom-[25%] bg-white/80 text-sm px-3 py-1 rounded-full border border-pink-200 backdrop-blur-sm flex items-center gap-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1.8, duration: 0.3 }}
+                  >
+                    <GitBranch className="w-3 h-3" /> Workflow Manager
+                  </motion.div>
+                </motion.div>
               </div>
               
               <h3 className="text-lg font-medium text-gray-800 mb-4">Agent Structure</h3>
@@ -164,6 +226,54 @@ const AgentArchitecture: React.FC = () => {
                       </div>
                     </motion.div>
                   ))}
+                </div>
+              </div>
+              
+              <div className="mt-8 mb-4">
+                <h3 className="text-lg font-medium text-gray-800 mb-2">Live Agent Demo</h3>
+                <p className="text-sm text-gray-600 mb-4">Experience how our agents work together to process your query:</p>
+                
+                <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                  <div className="space-y-3">
+                    <motion.div 
+                      className="flex items-center gap-3 p-2 rounded-md border border-yellow-300 shadow-sm bg-white"
+                      animate={{ scale: [1, 1.02, 1], opacity: [0.8, 1, 0.9] }}
+                      transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                      <div className="h-4 w-4 rounded-full bg-green-500"></div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-yellow-100 text-yellow-800 border border-yellow-200">
+                        <Bot className="h-3.5 w-3.5" />
+                        <span className="text-xs font-medium">Master Agent</span>
+                      </div>
+                      <span className="text-xs text-gray-600">Analyzing query and coordinating sub-agents</span>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="flex items-center gap-3 p-2 rounded-md border border-transparent"
+                      animate={{ scale: [1, 1.02, 1], opacity: [0.8, 1, 0.9] }}
+                      transition={{ duration: 2, delay: 1, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                      <div className="h-4 w-4 rounded-full bg-green-500"></div>
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-blue-100 text-blue-800 border border-blue-200">
+                        <Bot className="h-3.5 w-3.5" />
+                        <span className="text-xs font-medium">Classification Agent</span>
+                      </div>
+                      <span className="text-xs text-gray-600">Categorizing query and relevant data sources</span>
+                    </motion.div>
+                    
+                    <motion.div 
+                      className="flex items-center gap-3 p-2 rounded-md border border-transparent"
+                      animate={{ scale: [1, 1.02, 1], opacity: [0.8, 1, 0.9] }}
+                      transition={{ duration: 2, delay: 2, repeat: Infinity, repeatType: "reverse" }}
+                    >
+                      <RefreshCw className="h-4 w-4 text-blue-500 animate-spin" />
+                      <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-amber-100 text-amber-800 border border-amber-200">
+                        <Bot className="h-3.5 w-3.5" />
+                        <span className="text-xs font-medium">Forecasting Agent</span>
+                      </div>
+                      <span className="text-xs text-gray-600">Analyzing historical data trends</span>
+                    </motion.div>
+                  </div>
                 </div>
               </div>
               

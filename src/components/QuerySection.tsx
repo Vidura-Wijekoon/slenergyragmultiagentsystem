@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { HelpCircle, Send, Bot, Network } from 'lucide-react';
@@ -66,32 +66,37 @@ const QuerySection: React.FC<QuerySectionProps> = ({
     setQuery(example);
   };
 
-  // Define the agents used in the pipeline
+  // Define the agents used in the pipeline with colors
   const agentTypes = [
     { 
       name: 'Master Agent', 
-      description: 'Coordinates the workflow and delegates tasks to specialized sub-agents', 
-      icon: <Bot className="h-4 w-4 text-yellow-500" /> 
+      description: 'Coordinates the workflow and delegates tasks to specialized sub-agents',
+      color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      icon: <Bot className="h-4 w-4 text-yellow-700" /> 
     },
     { 
       name: 'Forecasting Agent', 
-      description: 'Analyzes time-series data and predicts future trends in energy production and consumption', 
-      icon: <Bot className="h-4 w-4 text-amber-500" /> 
+      description: 'Analyzes time-series data and predicts future trends in energy production and consumption',
+      color: 'bg-amber-100 text-amber-800 border-amber-200', 
+      icon: <Bot className="h-4 w-4 text-amber-700" /> 
     },
     { 
       name: 'Imputation Agent', 
-      description: 'Fills in missing data in energy datasets to provide complete analysis', 
-      icon: <Bot className="h-4 w-4 text-rose-400" /> 
+      description: 'Fills in missing data in energy datasets to provide complete analysis',
+      color: 'bg-rose-100 text-rose-800 border-rose-200', 
+      icon: <Bot className="h-4 w-4 text-rose-700" /> 
     },
     { 
       name: 'Classification Agent', 
-      description: 'Categorizes and organizes energy policy data and research', 
-      icon: <Bot className="h-4 w-4 text-blue-400" /> 
+      description: 'Categorizes and organizes energy policy data and research',
+      color: 'bg-blue-100 text-blue-800 border-blue-200', 
+      icon: <Bot className="h-4 w-4 text-blue-700" /> 
     },
     { 
       name: 'Anomaly Detection Agent', 
-      description: 'Identifies unusual patterns in energy data that may require attention', 
-      icon: <Bot className="h-4 w-4 text-orange-500" /> 
+      description: 'Identifies unusual patterns in energy data that may require attention',
+      color: 'bg-orange-100 text-orange-800 border-orange-200', 
+      icon: <Bot className="h-4 w-4 text-orange-700" /> 
     }
   ];
 
@@ -119,41 +124,38 @@ const QuerySection: React.FC<QuerySectionProps> = ({
           className="flex items-center gap-1"
         >
           <Network className="w-4 h-4" />
-          <span className="text-xs">{showAgentInfo ? 'Hide Agents' : 'Show Agents'}</span>
+          <span className="text-xs">{showAgentInfo ? 'Hide Agents' : 'View Agents'}</span>
         </Button>
       </div>
       
-      {showAgentInfo && (
-        <motion.div 
-          className="mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200"
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-        >
-          <p className="text-sm text-gray-700 mb-2 font-medium">Multi-Agent Pipeline:</p>
-          <div className="flex flex-wrap gap-2 mb-3">
-            {agentTypes.map((agent, index) => (
-              <TooltipProvider key={index}>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Badge 
-                      variant={index === 0 ? "default" : "outline"} 
-                      className={`flex items-center gap-1 cursor-help ${index === 0 ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200' : ''}`}
-                    >
-                      {agent.icon}
-                      {agent.name}
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs max-w-[200px]">{agent.description}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ))}
-          </div>
-          <p className="text-xs text-gray-500">Your query will be processed through this intelligent agent system to provide accurate information and analysis.</p>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {showAgentInfo && (
+          <motion.div 
+            className="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <p className="text-sm font-medium text-gray-700 mb-3">Multi-Agent Pipeline:</p>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {agentTypes.map((agent, index) => (
+                <motion.div
+                  key={index}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border ${agent.color}`}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.2 }}
+                >
+                  {agent.icon}
+                  <span className="text-xs font-medium">{agent.name}</span>
+                </motion.div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500">Your query will be processed through this intelligent agent system to provide accurate information and analysis.</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       <form onSubmit={handleSubmit}>
         <div className="mb-4">

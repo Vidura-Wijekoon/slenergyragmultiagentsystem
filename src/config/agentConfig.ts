@@ -65,21 +65,21 @@ export const agents: Agent[] = [
 export const subAgents: SubAgent[] = [
   {
     id: 'sub-agent-1',
-    name: 'Sub Agent 1',
-    description: 'Retrieves relevant information from the knowledge base',
+    name: 'Sub Agent 1 (Retriever)',
+    description: 'Retrieves relevant information from the Sri Lanka energy knowledge base',
     function: 'Retriever',
     color: '#0EA5E9'
   },
   {
     id: 'sub-agent-2',
-    name: 'Sub Agent 2',
-    description: 'Analyzes and processes the retrieved information',
+    name: 'Sub Agent 2 (Analyzer)',
+    description: 'Analyzes and processes the retrieved information using advanced models',
     function: 'Analyzer',
     color: '#8B5CF6'
   },
   {
     id: 'sub-agent-3',
-    name: 'Sub Agent 3',
+    name: 'Sub Agent 3 (Synthesizer)',
     description: 'Synthesizes the analyzed information into a coherent response',
     function: 'Synthesizer',
     color: '#10B981'
@@ -132,19 +132,19 @@ export const queryPipeline = [
     step: 4,
     name: 'Information Retrieval',
     agentId: 'sub-agent-1',
-    description: 'Sub Agent 1 retrieves relevant data (Retriever)'
+    description: 'Sub Agent 1 retrieves relevant data from energy knowledge base'
   },
   {
     step: 5,
     name: 'Data Analysis',
     agentId: 'sub-agent-2',
-    description: 'Sub Agent 2 processes the retrieved information (Analyzer)'
+    description: 'Sub Agent 2 processes the retrieved information and applies analysis'
   },
   {
     step: 6,
     name: 'Response Synthesis',
     agentId: 'sub-agent-3',
-    description: 'Sub Agent 3 creates a coherent response (Synthesizer)'
+    description: 'Sub Agent 3 creates a coherent response with visualizations if needed'
   },
   {
     step: 7,
