@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   LineChart,
@@ -149,6 +148,11 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
         );
         
       case 'pie':
+        const totalValue = data.reduce((sum, entry) => {
+          const value = Number(entry[yKey]);
+          return sum + (isNaN(value) ? 0 : value);
+        }, 0);
+        
         return (
           <PieChart margin={margin}>
             <Pie
@@ -175,7 +179,13 @@ const DataVisualization: React.FC<DataVisualizationProps> = ({
                 border: '1px solid #ddd',
                 borderRadius: '4px'
               }} 
-              formatter={(value, name) => [`${value} (${((value / data.reduce((sum, entry) => sum + entry[yKey], 0)) * 100).toFixed(1)}%)`, name]}
+              formatter={(value: any, name: string) => {
+                const numValue = Number(value);
+                const percentage = isNaN(numValue) || totalValue === 0 
+                  ? '0.0%' 
+                  : `${((numValue / totalValue) * 100).toFixed(1)}%`;
+                return [`${value} (${percentage})`, name];
+              }}
             />
             <Legend 
               layout="horizontal" 
