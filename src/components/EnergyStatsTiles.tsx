@@ -30,7 +30,7 @@ const EnergyStatsTiles = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-0">
       {/* Incoming Solar Energy */}
       <Card className="p-4 relative overflow-hidden backdrop-blur-sm bg-gradient-to-br from-yellow-50/80 to-orange-50/80 border border-yellow-100">
         <div className="flex items-start justify-between">

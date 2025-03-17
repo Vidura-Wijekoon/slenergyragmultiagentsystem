@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
@@ -207,7 +206,7 @@ const Index = () => {
             ))}
           </motion.div>
           
-          <div className="space-y-6">
+          <div className="space-y-6 flex-1">
             {renderActiveSection()}
           </div>
         </div>
