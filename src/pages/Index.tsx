@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useToast } from "@/components/ui/use-toast";
@@ -11,8 +10,6 @@ import ResultsSection from '@/components/ResultsSection';
 import DataSection from '@/components/DataSection';
 import PolicySection from '@/components/PolicySection';
 import PowerDashboard from '@/components/PowerDashboard';
-import EnergyMetricsSection from '@/components/EnergyMetricsSection';
-import WorldEnergyMap from '@/components/WorldEnergyMap';
 import { submitQuery } from '@/utils/api';
 import { Button } from '@/components/ui/button';
 
@@ -206,33 +203,7 @@ const Index = () => {
             ))}
           </motion.div>
           
-          {/* Main interactive section */}
-          <div className="mb-16">
-            <div className="soft-card">
-              {renderActiveSection()}
-            </div>
-          </div>
-          
-          {/* Enhanced visualization sections with better spacing and structure */}
-          <div className="space-y-16">
-            {/* Energy Metrics Section */}
-            <section className="bg-energy-metrics soft-card">
-              <div className="section-header">
-                <h2 className="section-title">Sri Lanka Energy Metrics & Indices</h2>
-                <p className="section-subtitle">Key metrics and indicators to understand the energy landscape of Sri Lanka</p>
-              </div>
-              <EnergyMetricsSection />
-            </section>
-            
-            {/* World Energy Map Section */}
-            <section className="bg-global-map soft-card">
-              <div className="section-header">
-                <h2 className="section-title">Global Energy Perspective</h2>
-                <p className="section-subtitle">Compare Sri Lanka's energy profile with global statistics</p>
-              </div>
-              <WorldEnergyMap />
-            </section>
-          </div>
+          {renderActiveSection()}
         </div>
       </main>
       
