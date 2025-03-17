@@ -2,7 +2,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Header from '@/components/Header';
-import { Bot, ArrowRight, GitBranch, Database, HardDrive, ChevronLeft, HelpingHand, Search, PenTool, Cpu, Network } from 'lucide-react';
+import { Bot, ArrowRight, GitBranch, Database, HardDrive, ChevronLeft, HelpingHand, Search, PenTool, Cpu, Network, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { agents, subAgents, queryPipeline } from '@/config/agentConfig';
