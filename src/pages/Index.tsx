@@ -11,6 +11,7 @@ import ResultsSection from '@/components/ResultsSection';
 import DataSection from '@/components/DataSection';
 import PolicySection from '@/components/PolicySection';
 import PowerDashboard from '@/components/PowerDashboard';
+import EarthAnimation from '@/components/EarthAnimation';
 import { submitQuery } from '@/utils/api';
 import { Button } from '@/components/ui/button';
 
@@ -109,6 +110,7 @@ const Index = () => {
         return (
           <>
             <QuerySection onSubmit={handleQuerySubmit} isLoading={isLoading} sectionType="search" />
+            <EarthAnimation className="my-8" />
             <ResultsSection 
               isLoading={isLoading}
               result={result}
@@ -147,6 +149,7 @@ const Index = () => {
         return (
           <>
             <QuerySection onSubmit={handleQuerySubmit} isLoading={isLoading} sectionType="search" />
+            <EarthAnimation className="my-8" />
             <ResultsSection 
               isLoading={isLoading}
               result={result}
