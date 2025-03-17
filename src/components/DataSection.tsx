@@ -13,7 +13,6 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { agents } from '@/config/agentConfig';
 
 interface DataSectionProps {
   onSubmit: (query: string) => void;
@@ -61,32 +60,33 @@ const DataSection: React.FC<DataSectionProps> = ({
     setQuery(example);
   };
 
-  const renderAgentInfo = () => {
-    return (
-      <motion.div 
-        className="mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200"
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: 'auto' }}
-        exit={{ opacity: 0, height: 0 }}
-      >
-        <p className="text-sm text-gray-700 mb-2 font-medium">Multi-Agent Pipeline:</p>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {agents.map((agent) => (
-            <div 
-              key={agent.id} 
-              className="flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-xs"
-              style={{ borderLeftColor: agent.color, borderLeftWidth: '3px' }}
-            >
-              <Bot className="w-4 h-4" style={{ color: agent.color }} />
-              <span className="font-medium">{agent.name}</span>
-              <span className="text-gray-500">- {agent.description}</span>
-            </div>
-          ))}
-        </div>
-        <p className="text-xs text-gray-500">Your query will be processed through this intelligent agent system to provide accurate information and analysis.</p>
-      </motion.div>
-    );
-  };
+  const visualizationAgents = [
+    { 
+      name: 'Coordinator Agent', 
+      description: 'Coordinates the entire visualization process', 
+      icon: <Bot className="h-4 w-4 text-purple-600" /> 
+    },
+    { 
+      name: 'Workflow Manager', 
+      description: 'Manages the workflow and assigns tasks to sub-agents', 
+      icon: <Bot className="h-4 w-4 text-pink-600" /> 
+    },
+    { 
+      name: 'Sub Agent 1 (Retriever)', 
+      description: 'Retrieves relevant data from the knowledge base', 
+      icon: <Bot className="h-4 w-4 text-blue-500" /> 
+    },
+    { 
+      name: 'Sub Agent 2 (Analyzer)', 
+      description: 'Analyzes the data and determines optimal visualization', 
+      icon: <Bot className="h-4 w-4 text-indigo-500" /> 
+    },
+    { 
+      name: 'Sub Agent 3 (Synthesizer)', 
+      description: 'Creates the final visualization and explanation', 
+      icon: <Bot className="h-4 w-4 text-green-500" /> 
+    }
+  ];
 
   const renderVisualization = () => {
     if (!visualizationData) return null;
@@ -141,7 +141,26 @@ const DataSection: React.FC<DataSectionProps> = ({
           </Button>
         </div>
         
-        {showAgentInfo && renderAgentInfo()}
+        {showAgentInfo && (
+          <motion.div 
+            className="mb-6 bg-slate-50 p-3 rounded-lg border border-slate-200"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <p className="text-sm text-gray-700 mb-2 font-medium">Multi-Agent Pipeline:</p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {visualizationAgents.map((agent, index) => (
+                <div key={index} className="flex items-center gap-1 bg-white px-2 py-1 rounded-md border border-gray-200 text-xs">
+                  {agent.icon}
+                  <span className="font-medium">{agent.name}</span>
+                  <span className="text-gray-500">- {agent.description}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-gray-500">Your query will be processed through this intelligent agent system to provide accurate information and analysis.</p>
+          </motion.div>
+        )}
         
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
